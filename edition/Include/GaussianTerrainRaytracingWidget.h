@@ -1,7 +1,7 @@
 #pragma once
 #include "libs/realtime.h"
-
 #include "libs/mayarender.h"
+
 #include "Tools/Tool.h"
 #include "Tools/ToolEdit.h"
 #include "Kernels.h"
@@ -124,7 +124,6 @@ public slots:
 	void updateTranslateOnlyGraphTool(bool translate) const;
 	void updateStiffnessGraphTool(int val) const;
 	void updateBlendGraphTool(int val) const;
-	void setFillHolesGraphTool(bool fill) const;
 	void setScaleGraphTool(bool scale) const;
 	void setInfluenceRegionGraphTool(bool enable) const;
 

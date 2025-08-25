@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QtCore/QtCore>
-#include "libs/evector.h"
+
 #include "libs/mayashader.h"
 #include "libs/color.h"
 #include "libs/evectorfloat.h"

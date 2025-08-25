@@ -11,9 +11,7 @@ enum class ToolType
 	NONE,
 	HAND,
 	MOVE,
-	CURVE,
 	EDIT,
-	SCALE,
 	GRAPH,
 };
 

@@ -1,7 +1,8 @@
 #pragma once
-#include "Tool.h"
+
 #include "libs/heightfield.h"
 
+#include "Tool.h"
 
 class ToolEdit : public Tool
 {

@@ -482,7 +482,7 @@ ScalarField2 GPUHeightFieldAnalysis::Accessibility(const HeightField& hf, const 
 }
 
 /*!
-\brief Compute soft shadows. The code is the same as the SmoothShadow() function in LibMaya/Shaders/heightfield_raytrace.glsl file.
+\brief Compute soft shadows.
 \param hf %Heightfield.
 \param l Light direction, should be normalized
 \param s Shadow strength

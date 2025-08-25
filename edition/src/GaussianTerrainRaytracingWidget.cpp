@@ -5,12 +5,10 @@
 #include <direct.h>
 
 #include "libs/scalarfield.h"
-#include "libs/curve.h"
 #include "libs/mayageometry.h"
 #include "libs/noise.h"
 #include "Tools/ToolEdit.h"
 #include "Tools/ToolBrush.h"
-#include <Tools/ToolCurve.h>
 #include <QtWidgets/qfiledialog.h>
 
 
@@ -473,9 +471,6 @@ void GaussianTerrainRaytracingWidget::setTool(const ToolType& type)
 	case ToolType::EDIT:
 		m_currentTool = std::make_unique<ToolEdit>(this, m_kernels);
 		break;
-	case ToolType::CURVE:
-		m_currentTool = std::make_unique<ToolCurve>(this, m_kernels);
-		break;
 	case ToolType::GRAPH:
 		m_currentTool = std::make_unique<ToolGraph>(this, m_kernels);
 		break;
@@ -507,16 +502,16 @@ QString GaussianTerrainRaytracingWidget::getRecordName(const QString& suffix)
 void GaussianTerrainRaytracingWidget::loadShader()
 {
 	QString fullPath = QString::fromStdString(
-		std::string(SOLUTION_DIR) + "/Shaders/gaussians_raytrace.glsl");
+		std::string(SOLUTION_DIR) + "/shaders/gaussians_raytrace.glsl");
 	QByteArray ba = fullPath.toLocal8Bit();
 	shaderProgram = read_program(ba.data());
 
-	fullPath = QString::fromStdString(std::string(SOLUTION_DIR) + "/Shaders/gaussians_rasterizer.glsl");
+	fullPath = QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/gaussians_rasterizer.glsl");
 	ba = fullPath.toLocal8Bit();
 	m_rasterizerShader = read_program(ba.data());
 
 	fullPath = QString::fromStdString(
-		std::string(SOLUTION_DIR) + "/Shaders/gaussians_acceleration_grid.glsl");
+		std::string(SOLUTION_DIR) + "/shaders/gaussians_acceleration_grid.glsl");
 	ba = fullPath.toLocal8Bit();
 	m_accelerationGridShader = read_program(ba.data());
 }
@@ -955,15 +950,6 @@ void GaussianTerrainRaytracingWidget::updateBlendGraphTool(int val) const
 	}
 }
 
-void GaussianTerrainRaytracingWidget::setFillHolesGraphTool(bool fill) const
-{
-	if (m_currentTool && m_currentTool->type() == ToolType::GRAPH)
-	{
-		auto tool = dynamic_cast<ToolGraph*>(m_currentTool.get());
-		tool->setFillHoles(fill);
-	}
-}
-
 void GaussianTerrainRaytracingWidget::setScaleGraphTool(bool scale) const
 {
 	if (m_currentTool && m_currentTool->type() == ToolType::GRAPH)
@@ -1034,7 +1020,6 @@ void GaussianTerrainRaytracingWidget::updateTranslateOnlyGraphTool(const bool tr
 		tool->setTranslateOnly(translate);
 	}
 }
-
 
 
 void GaussianTerrainRaytracingWidget::timing(int frames)

@@ -1,10 +1,10 @@
 #pragma once
 
 #include <vector>
-#include <iostream>
+
 #include "libs/ellipse.h"
 #include "libs/evector.h"
-#include "utils.h"
+
 #include "Kernel.h"
 
 class DetailsKernel : public Kernel
@@ -56,10 +56,5 @@ public:
 		Kernel::rotate(theta, o);
 		m_thetaWODeform -= theta;
 	}
-
-	/*Kernel operator+(const Kernel& k) const override;
-	Kernel operator/(float val) const override;
-	Kernel operator*(float val) const override;*/
-
 };
 

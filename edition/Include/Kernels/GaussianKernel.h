@@ -1,10 +1,8 @@
 #pragma once
-#include "libs/ellipse.h"
-#include <vector>
-#include <iostream>
 
-#include "libs/evector.h"
-#include "utils.h"
+#include <vector>
+
+#include "libs/ellipse.h"
 
 #include "Kernel.h"
 
@@ -49,10 +47,5 @@ public:
 	KernelType type() const override { return KernelType::GAUSSIAN; }
 
 	float& beta() { return m_beta; }
-
-	/*Kernel operator+(const Kernel& k) const override;
-	Kernel operator/(float val) const override;
-	Kernel operator*(float val) const override;*/
-
 };
 

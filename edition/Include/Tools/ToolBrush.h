@@ -1,7 +1,8 @@
 #pragma once
-#include "Tool.h"
+
 #include "libs/polygon.h"
 
+#include "Tool.h"
 #include "Kernels/Kernel.h"
 
 class ToolBrush : public Tool

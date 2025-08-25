@@ -5,7 +5,7 @@
 /*!
 \brief Build a simple renderer.
 */
-MayaSimpleRendererColors::MayaSimpleRendererColors() : program(QString::fromStdString(std::string(SOLUTION_DIR) + "/Shaders/simple_colors"))// Load the program for the simple renderer
+MayaSimpleRendererColors::MayaSimpleRendererColors() : program(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/simple_colors"))// Load the program for the simple renderer
 {
     QVector<Vector> lines;
     lines.append(Vector(0., 0., 0.));
@@ -64,7 +64,7 @@ MayaSimpleRendererColors::MayaSimpleRendererColors() : program(QString::fromStdS
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-MayaSimpleRendererColors::MayaSimpleRendererColors(int linesSize, int colorsSize, GLenum lineType) : program(QString::fromStdString(std::string(SOLUTION_DIR) + "/Shaders/simple_colors"))// Load the program for the simple renderer
+MayaSimpleRendererColors::MayaSimpleRendererColors(int linesSize, int colorsSize, GLenum lineType) : program(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/simple_colors"))// Load the program for the simple renderer
 {
     this->lineType = lineType;
 
@@ -104,7 +104,7 @@ MayaSimpleRendererColors::MayaSimpleRendererColors(int linesSize, int colorsSize
 \param colors Colors of the lines.
 \param lineType Type of line to draw.
 */
-MayaSimpleRendererColors::MayaSimpleRendererColors(QVector<VectorFloat> lines, QVector<ColorFloat> colors, GLenum lineType) : program(QString::fromStdString(std::string(SOLUTION_DIR) + "/Shaders/simple_colors"))// Load the program for the simple renderer
+MayaSimpleRendererColors::MayaSimpleRendererColors(QVector<VectorFloat> lines, QVector<ColorFloat> colors, GLenum lineType) : program(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/simple_colors"))// Load the program for the simple renderer
 {
     initSizeLines = lines.size();
     currentSizeLines = lines.size();

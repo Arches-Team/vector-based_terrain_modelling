@@ -1,5 +1,5 @@
-# in order to propoer work, you have to set this env variable to point to your Qt install dir
-# CMAKE_PREFIX_PATH
+# Tested on Windows 10 - in order to proper work, you have to set this env variable to point to your Qt install dir
+# CMAKE_PREFIX_PATH=Qt/versionx.x/compiler/lib/cmake
 cmake_minimum_required(VERSION 3.16)
 project(VectorTerrains VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
@@ -11,16 +11,15 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Charts PrintSupport)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_AUTOUIC ON)
 
 # OpenGL & GLEW library
 find_package(OpenGL)
 find_package(GLEW)
 if (NOT GLEW_FOUND)
-    message("Adding GLEW manually...")
+    message("Adding GLEW manually for Windows...")
     set(PLATFORM x64)
-    set(GLEW_INCLUDE_DIRS $ENV{ARCHESLIBDIR}/LibPlatform/LibGL/$(PLATFORM)/Include)
-    set(GLEW_LIBRARIES $ENV{ARCHESLIBDIR}/LibPlatform/LibGL/$(PLATFORM)/Library/glew32.lib)
+    set(GLEW_INCLUDE_DIRS GL/$(PLATFORM)/include)
+    set(GLEW_LIBRARIES GL/$(PLATFORM)/lib/glew32.lib)
     set(GLEW_FOUND true)
 endif ()
 
@@ -34,7 +33,6 @@ set(SOURCE_FILES
         Source/utils.cpp
 
         Source/Tools/ToolBrush.cpp
-        Source/Tools/ToolCurve.cpp
         Source/Tools/ToolEdit.cpp
         Source/Tools/ToolGraph.cpp
 
@@ -191,8 +189,8 @@ SET(UI_FILES
 )
 
 qt_wrap_ui(SOURCE_FILES UI/main.ui)
-qt_wrap_cpp(SOURCE_FILES Include/qte.h)
-qt_wrap_cpp(SOURCE_FILES Include/GaussianTerrainRaytracingWidget.h Include/libs/maya.h Include/libs/realtime.h)
+qt_wrap_cpp(SOURCE_FILES include/qte.h)
+qt_wrap_cpp(SOURCE_FILES include/GaussianTerrainRaytracingWidget.h include/libs/maya.h include/libs/realtime.h)
 
 qt_add_executable(${PROJECT_NAME}
         ${SOURCE_FILES}
@@ -200,7 +198,7 @@ qt_add_executable(${PROJECT_NAME}
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC SOLUTION_DIR="${CMAKE_CURRENT_SOURCE_DIR}/")
-target_include_directories(${PROJECT_NAME} PRIVATE Include/)
+target_include_directories(${PROJECT_NAME} PRIVATE include/)
 target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_INCLUDE_DIRS})
 
 target_link_directories(${PROJECT_NAME} BEFORE PUBLIC $ENV{GLEW_INCLUDE_DIRS})

@@ -62,28 +62,12 @@ float Height(vec2 p)
 {
     float ret = 0;
 
-    // if(gaussianID == 1)
-    //     return 10.;
     p.xy = p.yx;
 
     ivec2 cell = ivec2(floor(((p + 1.) / 2.) * gridResolution));
     int cellIndex = cell.y * gridResolution.x + cell.x;
     int count = gridCellCounts[cellIndex];
-    // return count;
-    // return cellIndex;
-    // return gridCellMappings[cellIndex * maxPerCell + count/2];
 
-    // [-5 ; 5]
-    // p = p * 5.;
-
-    // Debug to check range
-    // return (length(p)/sqrt(2))*zRange.y/5.;
-
-    // return showNbGaussians;
-
-    //bool has_beta = gaussianOffset >= 8;//mod(gaussiansSize, 8) == 0;
-
-    //int cpt = 0;
     for (int j = 0; j < min(count, maxPerCell); ++j)
     {
         int i = gridCellMappings[cellIndex * maxPerCell + j];
@@ -99,16 +83,10 @@ float Height(vec2 p)
         float x = p.x;
         float y = p.y;
 
-        // x -= mu.y * 5.;
-        // y -= mu.x * 5.;
         x = mu.y - x;
         y = mu.x - y;
         
         float dist;
-
-        // theta = 3*M_PI/2 - theta;
-        // sigma_x *= 2;
-        // sigma_y *= 2;
 
         mat2 R = mat2(cos(theta), -sin(theta),
                     sin(theta), cos(theta));
@@ -137,9 +115,7 @@ float Height(vec2 p)
 
         vec3 inv_cov = vec3(cov_compact[2] * inv_det, cov_compact[1] * inv_det, cov_compact[0] * inv_det);
         float z = 0.5 * (inv_cov[0] * x * x + inv_cov[2] * y * y) + inv_cov[1] * x * y;
-        //float z = inv_cov[0] * x * x + 2 * (inv_cov[1] * x * y) + inv_cov[2] * y * y;
 
-        // TODO: gaussianId is not working if set as uniform. I suspect an overflow of uniforms even if I should be able to have thousands of them...
         if(id == gaussianID)
         {
             float beta = gaussians[i * gaussianOffset + 7];
@@ -187,23 +163,12 @@ float Height(vec2 p)
             //[ -1, 1]
             t = (t * 2.) - 1.;
 
-            // pNorm.x = mu.y - pNorm.x;
-            // pNorm.y = mu.x - pNorm.y;
-            // pNorm = (mu - t) + pNorm;
             pNorm = noDeformR * pNorm;
-            // pNorm.x *= sigma_y/sigma_x;
-            // pNorm.x /= sigma_x;
-            // pNorm.x *= origSigmaX;
-            // pNorm.y *= origSigmaY;
-            // pNorm.x = (pNorm.x/sigma_x)*origSigmaX;
-            // pNorm.y = (pNorm.y/sigma_y)*origSigmaY;
             pNorm = inverseS * pNorm;
             pNorm = origS * pNorm;
             pNorm = origR * pNorm;
 
             t *= -1;
-
-            //t = abs(t);
             
             t = pNorm - t;
             t = clamp(t, -1., 1.);
@@ -214,17 +179,10 @@ float Height(vec2 p)
             int n = tInt.y;
 
             ret += Bilinear(atDetails(m, n), atDetails(m + 1, n), atDetails(m + 1, n + 1), atDetails(m, n + 1), t.x - m, t.y - n) * val * noiseLevel;
-            // ret += details[tInt.x * detailsSize.x + tInt.y] * val * noiseLevel;
         }
-
-        //cpt++;
-        
     }
-    // return cpt*1.;
-    // ret = ((clamp(ret, -1., 10.)+1.)/2.)*100.;
-    // ret += perlinNoise(((p / 5.) + 1.) / 2., 100, 6, 0.6, 2.0, 0x578437adU) * noiseLevel / 10.;
+
     ret *= zRange.y;
-    // ret += 50.;
     ret = max(0, ret);
 
     return ret;

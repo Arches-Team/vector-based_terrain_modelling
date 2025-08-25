@@ -18,7 +18,7 @@ ToolGraph::ToolGraph(GaussianTerrainRaytracingWidget* parent, Kernels& kernels) 
 	                           GL_STREAM_READ);
 
 	const QString fullPath = QString::fromStdString(
-		std::string(SOLUTION_DIR) + "/Shaders/gaussians_holes_detection.glsl");
+		std::string(SOLUTION_DIR) + "/shaders/gaussians_holes_detection.glsl");
 	std::cout << fullPath.toStdString() << std::endl;
 	QByteArray ba = fullPath.toLocal8Bit();
 	m_differenceComputeShader = read_program(ba.data());
@@ -347,61 +347,6 @@ void ToolGraph::updateKernels()
     
 }
 
-void ToolGraph::fillHoles()
-{
-	//TODO : fix with the new Kernels architecture
-	/*glUseProgram(m_differenceComputeShader);
-	m_hfBuffer.BindAt(GL_SHADER_STORAGE_BUFFER, 0);
-	m_parent->getHFBuffer().BindAt(GL_SHADER_STORAGE_BUFFER, 1);
-	m_differenceBuffer.BindAt(GL_SHADER_STORAGE_BUFFER, 2);
-
-	int nx = m_parent->getHF()->GetSizeX(), ny = m_parent->getHF()->GetSizeY();
-	glUniform1i(glGetUniformLocation(m_differenceComputeShader, "nx"), nx);
-	glUniform1i(glGetUniformLocation(m_differenceComputeShader, "ny"), ny);
-
-	int dispatchSize = (max(nx, ny) / 8) + 1;
-	glDispatchCompute(dispatchSize, dispatchSize, 1);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	ScalarField2 difference(m_parent->getHF()->GetBox(), nx, ny, 0.);
-	std::vector<float> data;
-	const int totalBufferSize = nx * ny;
-	data.resize(totalBufferSize);
-	m_differenceBuffer.GetData(data);
-	glUseProgram(0);
-
-	for (int j = 0; j < totalBufferSize; j++)
-	{
-		difference[j] = data[j];
-	}
-
-	auto box = difference.GetBox();
-	auto points = box.Poisson(10, 10000);
-	Kernel mean = m_kernels.getMeanParameters() * 2.;
-	for (auto& point : points)
-	{
-		point -= box[0];
-		point /= (box[1] - box[0]);
-		auto pointNorm = (point * 2.);
-		pointNorm[0] -= 1.;
-		pointNorm[1] -= 1.;
-
-		point *= Vector2(nx, ny);
-		if (difference.at(QPoint(static_cast<int>(point[0]), static_cast<int>(point[1]))) == 1.)
-		{
-			Kernel kernel{
-				mean.scaleX(), mean.scaleY(), mean.modScale(), mean.theta(), mean.amplitude(),
-				static_cast<float>(pointNorm[0]), static_cast<float>(pointNorm[1]), mean.beta()
-			};
-			m_kernels.add(kernel);
-		}
-	}
-	emit m_parent->nbGaussiansChanged(m_parent->getNbGaussians());
-	m_parent->rasterizeGaussians();*/
-}
-
-/*
-\brief Initialize the graph
-*/
 void ToolGraph::initGraph()
 {
 	m_graphCrest.clear();
@@ -559,8 +504,6 @@ void ToolGraph::mouseReleaseEvent(QMouseEvent* e)
 	m_canMove = false;
 	m_nodesSelection.clear();
 	m_nodeToMove = nullptr;
-	if(m_needFillHoles)
-	    fillHoles();
 	updateRenderer();
 
 	m_parent->recordHF("graph");

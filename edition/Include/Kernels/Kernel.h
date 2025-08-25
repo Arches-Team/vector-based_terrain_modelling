@@ -1,9 +1,10 @@
 #pragma once
-#include "libs/ellipse.h"
-#include <vector>
-#include <iostream>
 
+#include <vector>
+
+#include "libs/ellipse.h"
 #include "libs/evector.h"
+
 #include "utils.h"
 
 enum class KernelType
@@ -73,10 +74,6 @@ public:
 	// Normalizing the kernel by setting scaleX as the major axis and theta \in [0 ; pi].
 	// Does not change visually the kernel.
 	void normalize();
-
-	/*virtual Kernel operator+(const Kernel& k) const;
-	virtual Kernel operator/(float val) const;
-	virtual Kernel operator*(float val) const;*/
 
 	float volume() const { return 2.f * utils::pi * m_scaleX * m_scaleY * std::abs(m_amplitude); }
 	bool operator<(const Kernel& k) const { return volume() < k.volume(); }

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "GaussianTerrainRaytracingWidget.h"
 #include "Kernels/Kernel.h"
 #include "graph.h"
@@ -64,7 +65,6 @@ private:
 	std::unordered_map<Node*, Vector2> m_movedNodes; // Node, offset
 
 	Vector2 m_lastIntersection;
-	bool m_needFillHoles{ false };
 	float m_blendThreshold{ 1.f };
 
 	static constexpr int m_nodeCircleSegment = 50;
@@ -115,7 +115,6 @@ public:
 	void setTranslateOnly(bool translate) { m_translateOnly = translate; }
 	void setStiffness(double k) { m_k = k; }
 	void setBlendThreshold(double threshold) { m_blendThreshold = threshold; }
-	void setFillHoles(bool fill) { m_needFillHoles = fill; }
 	void setScaleKernel(bool scale) { m_scaleKernel = scale; }
 
 	void setInfluenceRegionEnabled(bool enable) { m_influenceEnabled = enable; }

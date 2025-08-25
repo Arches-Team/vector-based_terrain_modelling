@@ -1,5 +1,7 @@
 #pragma once
+
 #include <vector>
+
 #include "libs/gabornoise.h"
 #include "Kernels/Kernel.h"
 
@@ -42,7 +44,6 @@ public:
 	}
 
 	// Statistics
-	//Kernel getMeanParameters();
 	float getMaxAbsAmplitude();
 
 	void clear(const std::vector<Kernel*>& kernels);
@@ -50,7 +51,7 @@ public:
 	void removeIf(const std::function<bool(const std::unique_ptr<Kernel>&)>& predicate);
 	bool empty() const { return m_kernels.empty(); }
 
-	// Really bad to expose parameters... But faster to code. TODO
+	// Bad to expose parameters... But faster to code. TODO
 	std::vector<std::unique_ptr<Kernel>>& getKernels() { return m_kernels; }
 
 	Kernel& operator[](int i);

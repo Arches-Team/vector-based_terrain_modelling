@@ -52,12 +52,6 @@ void main() {
     float sigma_y = gaussians[i * gaussianOffset + 2];
 
     vec2 c = vec2((gaussians[i*gaussianOffset+6]+1.)/2., (gaussians[i*gaussianOffset+5]+1.)/2.);
-    // c = -c;
-
-    // float p = smoothstep(0.2, 0.7, (int(i)/17077.));
-    // float a = 1.;
-    // if((c.y < p &&(c.x + c.y) < a) || (c.x < p && (c.x + c.y) < a) || (c.x + c.y) < 0.3 )
-    //     return;
 
     mat2 rot = mat2(cos(theta),sin(theta),-sin(theta),cos(theta));
 
@@ -71,19 +65,6 @@ void main() {
     vrot = vec2(sigma_x, 0.)*rot;
 
     bound2 bb = ellipseAABB(c, urot/2., vrot/2.);
-
-    // float t0 = atan(-(sigma_y*tan(theta))/sigma_x);
-    // float t1 = atan((sigma_y * cos(theta))/(sigma_x*sin(theta)));
-    // vec2 p0 = ellipsePoint(t0, sigma_x, sigma_y, theta);
-    // vec2 p1 = ellipsePoint(t1, sigma_x, sigma_y, theta);
-    // bound2 bb;
-    // bb.mMin.x = c.x - p0.x;
-    // bb.mMax.x = c.x + p0.x;
-    // bb.mMin.y = c.y - p1.y;
-    // bb.mMax.y = c.y + p1.y;
-    
-    // bb.mMin = (bb.mMin+1.)/2.;
-    // bb.mMax = (bb.mMax+1.)/2.;
 
     ivec2 minCell = ivec2(floor(bb.mMin * gridResolution));
     ivec2 maxCell = ivec2(ceil(bb.mMax * gridResolution));
