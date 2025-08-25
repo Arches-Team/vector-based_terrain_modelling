@@ -65,13 +65,7 @@ void GPUHydraulicErosionGrid::Init(const HeightField& hf)
 		bedrock[i] = (hf.at(i) - h_min) / (h_max - h_min) * scale ;
 
 	// Prepare shader
-	QString fullPath = System::GetResource("ARCHESLIBDIR", "/LibHeightField/LibHeightField/Shaders/heightfield_hydraulic.glsl");
-	if (fullPath.isEmpty())
-	{
-		std::cout << "GPUHydraulicErosion::Init(): variable d'environnement ARCHESLIBDIR non définie" << std::endl;
-		std::cin.get();
-		exit(-1);
-	}
+	QString fullPath = QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/heightfield_hydraulic.glsl");
 	QByteArray ba = fullPath.toLocal8Bit();
 	simulationShader.Initialize(ba.data());
 

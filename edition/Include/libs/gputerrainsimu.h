@@ -97,7 +97,7 @@ public:
 class GPUHydraulicErosionGrid_Test
 {
 protected:
-  GPUMapProcessing processingShader = GPUMapProcessing(System::GetResource("ARCHESLIBDIR", "/LibHeightField/LibHeightField/Shaders/map_processing.glsl"));
+  GPUMapProcessing processingShader = GPUMapProcessing(System::GetResource(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/map_processing.glsl")));
 
   GLuint simulationShader;			//!< Compute shader.
 

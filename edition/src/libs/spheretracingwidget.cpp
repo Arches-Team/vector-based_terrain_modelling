@@ -35,27 +35,18 @@ SphereTracingWidget::SDFGL::SDFGL(const QString& sdf_code_glsl, const FrameScale
 
   //shader = GLShader();
 
-  std::ifstream in("../../libs/LibMaya/Shaders/sphereTracing.glsl");
-  QString pPath = QString("../../libs");
-  if (in.good() == false)
+  QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
+  if (pPath.isEmpty())
   {
-    std::cout << "Fail to find local shader sphere tracing shader. Searching for a global shader." << std::endl;
-    pPath = System::GetResource("ARCHESLIBDIR");
-    if (pPath.isEmpty())
-    {
-      std::cout << "MeshWidget::ReloadShaders() : variable d'environnement ARCHESLIBDIR non défini" << std::endl;
-      std::cin.get();
-      exit(-1);
-    }
+    std::cout << "MeshWidget::ReloadShaders() : SOLUTION_DIR undefined" << std::endl;
+    std::cin.get();
+    exit(-1);
   }
 
-  QString fullPath = pPath + QString("/LibMaya/Shaders/sphereTracing.glsl");
+  QString fullPath = pPath + QString("/shaders/libs/sphereTracing.glsl");
   QByteArray ba = fullPath.toLocal8Bit();
 
-  //shader.Initialize(ba.constData());
   shader.Initialize(ba.constData(), sdf_code_glsl.toLocal8Bit().constData());
-
-  //std::string source = prepare_source(common_source, std::string(definitions).append("#define ").append(shader_keys[i]).append("\n"));
 }
 
 
@@ -396,46 +387,31 @@ void SphereTracingWidget::paintGL()
 */
 void SphereTracingWidget::ReloadShaders()
 {
-  //search for a local shader first, then in the ARCHE LIBS.
-  std::ifstream in("../../libs/LibMaya/Shaders/point.glsl");
-  QString pPath = QString("../../libs");
-  if (in.good() == false)
-  {
-    std::cout << "Fail to find local shader point rendering. Searching for a global shader." << std::endl;
-    pPath = System::GetResource("ARCHESLIBDIR");
-    if (pPath.isEmpty())
-    {
-      std::cout << "MeshWidget::ReloadShaders() : variable d'environnement ARCHESLIBDIR non défini" << std::endl;
-      std::cin.get();
-      exit(-1);
-    }
-  }
-  // Point
-  QString fullPath = pPath + QString("/LibMaya/Shaders/point.glsl");
-  QByteArray ba = fullPath.toLocal8Bit();
-  pointShader.Initialize(ba.constData());
-
-  // Shader/Camera/Profiler
-  pPath = System::GetResource("ARCHESLIBDIR");
+  QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
   if (pPath.isEmpty())
   {
-    std::cout << "MeshWidget::ReloadShaders() : variable d'environnement ARCHESLIBDIR non défini" << std::endl;
+    std::cout << "MeshWidget::ReloadShaders() : SOLUTION_DIR undefined" << std::endl;
     std::cin.get();
     exit(-1);
   }
 
+  // Point
+  QString fullPath = pPath + QString("/shaders/libs/point.glsl");
+  QByteArray ba = fullPath.toLocal8Bit();
+  pointShader.Initialize(ba.constData());
+
   // Sky
-  fullPath = pPath + QString("/LibMaya/Shaders/skybox.glsl");
+  fullPath = pPath + QString("/shaders/libs/skybox.glsl");
   ba = fullPath.toLocal8Bit();
   skyShader.Initialize(ba.constData());
 
   // Mesh
-  fullPath = pPath + QString("/LibMaya/Shaders/mesh.glsl");
+  fullPath = pPath + QString("/shaders/libs/mesh.glsl");
   ba = fullPath.toLocal8Bit();
   meshShader.Initialize(ba.constData());
 
   // Box
-  fullPath = pPath + QString("/LibMaya/Shaders/boundingBox.glsl");
+  fullPath = pPath + QString("/shaders/libs/boundingBox.glsl");
   ba = fullPath.toLocal8Bit();
   boxShader.Initialize(ba.constData());
 }

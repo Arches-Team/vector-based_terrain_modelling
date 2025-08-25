@@ -77,14 +77,7 @@ void GPUHydraulicErosionGrid_Test::Init(const HeightField& hf)
     // Prepare shader & Init buffer - Just done once
     if (simulationShader == 0)
     {
-        QString fullPath = System::GetResource("ARCHESLIBDIR", "/LibHeightField/LibHeightField/Shaders/heightfield_hydraulic_test.glsl");
-
-        if (fullPath.isEmpty())
-        {
-            std::cout << "GPUHydraulicErosion::Init() : variable d'environnement ARCHESLIBDIR non définie" << std::endl;
-            std::cin.get();
-            exit(-1);
-        }
+        QString fullPath = QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/heightfield_hydraulic_test.glsl");
         QByteArray ba = fullPath.toLocal8Bit();
         simulationShader = read_program(ba.data());
     }

@@ -545,26 +545,26 @@ void MeshWidget::RenderUiPanels()
 void MeshWidget::ReloadShaders()
 {
   // Shader/Camera/Profiler
-  QString pPath = System::GetResource("ARCHESLIBDIR");
+  QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
   if (pPath.isEmpty())
   {
-    std::cout << "MeshWidget::ReloadShaders() : variable d'environnement ARCHESLIBDIR non défini" << std::endl;
+    std::cout << "MeshWidget::ReloadShaders() : SOLUTION_DIR undefined" << std::endl;
     std::cin.get();
     exit(-1);
   }
 
   // Sky
-  QString fullPath = pPath + QString("/LibMaya/Shaders/skybox.glsl");
+  QString fullPath = pPath + QString("/shaders/libs/skybox.glsl");
   QByteArray ba = fullPath.toLocal8Bit();
   skyShader.Initialize(ba.constData());
 
   // Mesh
-  fullPath = pPath + QString("/LibMaya/Shaders/mesh.glsl");
+  fullPath = pPath + QString("/shaders/libs/mesh.glsl");
   ba = fullPath.toLocal8Bit();
   meshShader.Initialize(ba.constData());
 
   // Box
-  fullPath = pPath + QString("/LibMaya/Shaders/boundingBox.glsl");
+  fullPath = pPath + QString("/shaders/libs/boundingBox.glsl");
   ba = fullPath.toLocal8Bit();
   boxShader.Initialize(ba.constData());
 }

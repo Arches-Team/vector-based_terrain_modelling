@@ -160,10 +160,10 @@ void MayaWidget::InitGPU()
 */
 void MayaWidget::InitProgram()
 {
-  QString pPath = System::GetResource("ARCHESLIBDIR");
-  if (pPath.isEmpty()) std::cout << "MayaWidget::initProgram() : variable d'environnement ARCHESLIBDIR non défini" << std::endl;
+  QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
+  if (pPath.isEmpty()) std::cout << "MayaWidget::initProgram() : SOLUTION_DIR not defined" << std::endl;
 
-  gpuparam.shader_program = new MayaShader(pPath + QString("/LibMaya/Shaders/default"));
+  gpuparam.shader_program = new MayaShader(pPath + QString("/shaders/default"));
 
   // Bind uniform texture
   GLuint loc_tex1 = glGetUniformLocation(gpuparam.shader_program->GetProgram(), "tex1");
@@ -280,7 +280,7 @@ void MayaWidget::InitProgram()
   gpuparam.uniforms.TriPlanarIndex = glGetSubroutineIndex(gpuparam.shader_program->GetProgram(), GL_FRAGMENT_SHADER, "EricTriPlanar");
 
   // Create the program to draw the background
-  gpubackground = new MayaShader(pPath + QString("/LibMaya/Shaders/background"));
+  gpubackground = new MayaShader(pPath + QString("/shaders/background"));
 
   // Create the VAO used when drawing the background
   glGenVertexArrays(1, &backgroundVAO);
@@ -305,23 +305,23 @@ Basically load four texture images corresponding to bedrock, sand, snow, and gra
 */
 void MayaWidget::InitTerrainTextures()
 {
-  QString pPath = System::GetResource("ARCHESLIBDIR");
+  QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
 
-  if (pPath.isEmpty()) std::cout << "MayaWidget::InitTerrainTextures() : environment variable ARCHESLIBDIR undefined" << std::endl;
+  if (pPath.isEmpty()) std::cout << "MayaWidget::InitTerrainTextures() : SOLUTION_DIR undefined" << std::endl;
 
   // Load textures
-  QImage rock(pPath + QString("/LibMaya/Shaders/rock.png"));
-  QImage stone(pPath + QString("/LibMaya/Shaders/grass.png"));
-  QImage tex3(pPath + QString("/LibMaya/Shaders/sand.png"));
-  QImage tex4(pPath + QString("/LibMaya/Shaders/snow.png"));
+  QImage rock(pPath + QString("/shaders/rock.png"));
+  QImage stone(pPath + QString("/shaders/grass.png"));
+  QImage tex3(pPath + QString("/shaders/sand.png"));
+  QImage tex4(pPath + QString("/shaders/snow.png"));
   if (rock.isNull() || stone.isNull() || tex3.isNull() || tex4.isNull())
     std::cout << "Errors: loading images ! #1" << std::endl;
 
   // Axel textures (with normal maps)
-  QImage niceRock(pPath + QString("/LibMaya/Shaders/limestone-rock-albedo.png"));
-  QImage niceRockNormal(pPath + QString("/LibMaya/Shaders/limestone-rock-normal.png"));
-  QImage niceRock2(pPath + QString("/LibMaya/Shaders/StonesBeach-albedo.png"));
-  QImage niceRock2Normal(pPath + QString("/LibMaya/Shaders/StonesBeach-normal.png"));
+  QImage niceRock(pPath + QString("/shaders/limestone-rock-albedo.png"));
+  QImage niceRockNormal(pPath + QString("/shaders/limestone-rock-normal.png"));
+  QImage niceRock2(pPath + QString("/shaders/StonesBeach-albedo.png"));
+  QImage niceRock2Normal(pPath + QString("/shaders/StonesBeach-normal.png"));
   if (niceRock.isNull() || niceRockNormal.isNull() || niceRock2.isNull() || niceRock2Normal.isNull())
     std::cout << "Errors: loading images ! #2" << std::endl;
 

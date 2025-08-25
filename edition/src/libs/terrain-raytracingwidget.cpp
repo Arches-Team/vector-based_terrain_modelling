@@ -39,8 +39,14 @@ void TerrainRaytracingWidget::initializeGL()
 {
   MeshWidget::initializeGL();
 
-  QString pPath = System::GetResource("ARCHESLIBDIR");
-  QString fullPath = pPath + "/LibMaya/Shaders/heightfield_raytrace.glsl";
+  QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
+  if (pPath.isEmpty())
+  {
+    std::cout << "MeshWidget::ReloadShaders() : SOLUTION_DIR undefined" << std::endl;
+    std::cin.get();
+    exit(-1);
+  }
+  QString fullPath = pPath + "/shaders/libs/heightfield_raytrace.glsl";
   QByteArray ba = fullPath.toLocal8Bit();
   shaderProgram = read_program(ba.data());
 
@@ -208,8 +214,14 @@ void TerrainRaytracingWidget::ReloadShaders()
 {
   MeshWidget::ReloadShaders();
 
-  QString pPath = System::GetResource("ARCHESLIBDIR");
-  QString fullPath = pPath + "/LibMaya/Shaders/heightfield_raytrace.glsl";
+  QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
+  if (pPath.isEmpty())
+  {
+    std::cout << "MeshWidget::TerrainRaytracingWidget() : SOLUTION_DIR undefined" << std::endl;
+    std::cin.get();
+    exit(-1);
+  }
+  QString fullPath = pPath + "/shaders/libs/heightfield_raytrace.glsl";
   QByteArray ba = fullPath.toLocal8Bit();
   shaderProgram = read_program(ba.data());
 }
@@ -503,14 +515,15 @@ void TerrainRaytracingWidget::Reload()
 {
   release_program(shaderProgram);
 
-  QString pPath = System::GetResource("ARCHESLIBDIR");
+  QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
   if (pPath.isEmpty())
   {
-    std::cout << "TerrainRaytracingWidget::initializeGL() : variable d'environnement ARCHESLIBDIR non défini" << std::endl;
+    std::cout << "TerrainRaytracingWidget::initializeGL() : SOLUTION_DIR undefined" << std::endl;
     std::cin.get();
     exit(-1);
   }
-  QString fullPath = pPath + "LibMaya/Shaders/heightfield_raytrace.glsl";
+
+  QString fullPath = pPath + "/shaders/libs/heightfield_raytrace.glsl";
   QByteArray ba = fullPath.toLocal8Bit();
   shaderProgram = read_program(ba.data());
 

@@ -45,10 +45,10 @@ void GPUHeightFieldAnalysis::Init(int nx, int ny)
   totalBufferSize = nx * ny;
   dispatchSize = (max(nx, ny) / 8) + 1;
 
-  QString fullPath = System::GetResource("ARCHESLIBDIR", "/LibHeightField/LibHeightField/Shaders/heightfield_analysis.glsl");
+  QString fullPath = System::GetResource(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/heightfield_analysis.glsl"));
   if (fullPath.isEmpty())
   {
-    std::cout << "GPUHeightFieldAnalysis::Init() : variable d'environnement ARCHESLIBDIR non définie" << std::endl;
+    std::cout << "GPUHeightFieldAnalysis::Init() : error loading shader" << std::endl;
     std::cin.get();
     exit(-1);
   }
@@ -92,10 +92,10 @@ void GPUHeightFieldAnalysis::InitForTexture(const HeightField& hf)
   totalBufferSize = hf.VertexSize();
   dispatchSize = (max(nx, ny) / 8) + 1;
 
-  QString fullPath = System::GetResource("ARCHESLIBDIR", "/LibHeightField/LibHeightField/Shaders/heightfield_analysis.glsl");
+  QString fullPath = System::GetResource(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/heightfield_analysis.glsl"));
   if (fullPath.isEmpty())
   {
-    std::cout << "GPUHeightFieldAnalysis::Init() : variable d'environnement ARCHESLIBDIR non définie" << std::endl;
+    std::cout << "GPUHeightFieldAnalysis::Init() : error loading shader" << std::endl;
     std::cin.get();
     exit(-1);
   }
@@ -152,10 +152,10 @@ void GPUHeightFieldAnalysis::InitForSingleBuffer(const HeightField& hf)
   totalBufferSize = hf.VertexSize();
   dispatchSize = (max(nx, ny) / 8) + 1;
 
-  QString fullPath = System::GetResource("ARCHESLIBDIR", "/LibHeightField/LibHeightField/Shaders/heightfield_analysis.glsl");
+  QString fullPath = System::GetResource(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/heightfield_analysis.glsl"));
   if (fullPath.isEmpty())
   {
-    std::cout << "GPUHeightFieldAnalysis::Init() : variable d'environnement ARCHESLIBDIR non définie" << std::endl;
+    std::cout << "GPUHeightFieldAnalysis::Init() : error loading shader" << std::endl;
     std::cin.get();
     exit(-1);
   }
@@ -203,13 +203,7 @@ void GPUHeightFieldAnalysis::InitForDoubleBuffer(const HeightField& hf)
   totalBufferSize = hf.VertexSize();
   dispatchSize = (max(nx, ny) / 8) + 1;
 
-  QString fullPath = System::GetResource("ARCHESLIBDIR", "/LibHeightField/LibHeightField/Shaders/heightfield_analysis.glsl");
-  if (fullPath.isEmpty())
-  {
-    std::cout << "GPUHeightFieldAnalysis::Init() : variable d'environnement ARCHESLIBDIR non définie" << std::endl;
-    std::cin.get();
-    exit(-1);
-  }
+  QString fullPath = QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/heightfield_analysis.glsl");
   QByteArray ba = fullPath.toLocal8Bit();
   shader.Initialize(ba.data());
 
