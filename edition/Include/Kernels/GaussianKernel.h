@@ -1,9 +1,9 @@
 #pragma once
-#include <ellipse.h>
+#include "libs/ellipse.h"
 #include <vector>
 #include <iostream>
 
-#include "evector.h"
+#include "libs/evector.h"
 #include "utils.h"
 
 #include "Kernel.h"

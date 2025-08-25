@@ -1,5 +1,5 @@
 #include "qte.h"
-#include "triangle.h"
+#include "libs/triangle.h"
 
 int main(int argc, char *argv[])
 {

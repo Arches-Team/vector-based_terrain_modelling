@@ -4,14 +4,15 @@
 #include <QtGui/qpainter.h>
 #include <direct.h>
 
-#include "scalarfield.h"
-#include "curve.h"
-#include "mayageometry.h"
+#include "libs/scalarfield.h"
+#include "libs/curve.h"
+#include "libs/mayageometry.h"
+#include "libs/noise.h"
 #include "Tools/ToolEdit.h"
 #include "Tools/ToolBrush.h"
 #include <Tools/ToolCurve.h>
 #include <QtWidgets/qfiledialog.h>
-#include "noise.h"
+
 
 #include "Tools/ToolGraph.h"
 #include <Kernels/DetailsKernel.h>

@@ -1,5 +1,5 @@
 #include "Kernels/DetailsKernel.h"
-#include "smooth.h"
+#include "libs/smooth.h"
 
 
 //Kernel Kernel::operator+(const Kernel& k) const

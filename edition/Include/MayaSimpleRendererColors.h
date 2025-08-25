@@ -1,11 +1,10 @@
 #pragma once
 
 #include <QtCore/QtCore>
-#include "evector.h"
-#include "mayashader.h"
-#include "color.h"
-
-#include "evectorfloat.h"
+#include "libs/evector.h"
+#include "libs/mayashader.h"
+#include "libs/color.h"
+#include "libs/evectorfloat.h"
 
 class ColorFloat
 {

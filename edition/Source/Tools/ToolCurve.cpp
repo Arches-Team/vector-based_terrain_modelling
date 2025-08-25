@@ -1,8 +1,8 @@
 #include "Tools/ToolCurve.h"
 
 #include "GaussianTerrainRaytracingWidget.h"
-#include "heightfield.h"
-#include "evector.h"
+#include "libs/heightfield.h"
+#include "libs/evector.h"
 
 
 void ToolCurve::moveGaussians(double distMax) const

@@ -1,6 +1,6 @@
 #include "MayaSimpleRendererColors.h"
 
-#include "cpu.h"
+#include "libs/cpu.h"
 
 /*!
 \brief Build a simple renderer.

@@ -1,7 +1,7 @@
 #include "Tools/ToolEdit.h"
 
 #include "GaussianTerrainRaytracingWidget.h"
-#include "evector.h"
+#include "libs/evector.h"
 
 /*
  * Erase the gaussians that are in the circle of radius m_radius around the intersection point

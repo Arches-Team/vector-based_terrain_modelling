@@ -1,7 +1,7 @@
 
 #include "qte.h"
 #include <QtWidgets/QFileDialog>
-#include "heightfieldshader.h"
+#include "libs/heightfieldshader.h"
 #include "graph.h"
 #include "Tools/ToolEdit.h"
 #include "Eigen/Dense"

@@ -3,9 +3,9 @@
 #include <queue>
 #include <ranges>
 
-#include "convex.h"
+#include "libs/convex.h"
 #include "GaussianTerrainRaytracingWidget.h"
-#include "heightfield.h"
+#include "libs/heightfield.h"
 
 ToolGraph::ToolGraph(GaussianTerrainRaytracingWidget* parent, Kernels& kernels) : Tool(parent, kernels)
 {

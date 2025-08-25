@@ -1,7 +1,7 @@
 #pragma once
 #include <QtGui/QMouseEvent>
 
-#include "mayarender.h"
+#include "libs/mayarender.h"
 #include "Kernels.h"
 
 class GaussianTerrainRaytracingWidget;

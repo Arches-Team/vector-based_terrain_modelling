@@ -1,5 +1,5 @@
 #pragma once
-#include "curve.h"
+#include "libs/curve.h"
 #include "Tool.h"
 
 class ToolCurve : public Tool

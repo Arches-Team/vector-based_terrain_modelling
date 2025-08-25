@@ -1,5 +1,5 @@
 #include "Kernels/GaussianKernel.h"
-#include "smooth.h"
+#include "libs/smooth.h"
 
 //Kernel GaussianKernel::operator+(const Kernel& k) const
 //{

@@ -1,8 +1,8 @@
 #ifndef __Qte__
 #define __Qte__
 
-#include "heightfield.h"
-#include "maya.h"
+#include "libs/heightfield.h"
+#include "libs/maya.h"
 
 #include "uic_main.h"
 #include "GaussianTerrainRaytracingWidget.h"

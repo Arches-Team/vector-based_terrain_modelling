@@ -1,8 +1,7 @@
 #pragma once
 #include <vector>
-
+#include "libs/gabornoise.h"
 #include "Kernels/Kernel.h"
-#include <gabornoise.h>
 
 class Kernels
 {

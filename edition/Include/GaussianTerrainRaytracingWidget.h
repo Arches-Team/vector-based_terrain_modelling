@@ -1,7 +1,7 @@
 #pragma once
-#include <realtime.h>
+#include "libs/realtime.h"
 
-#include "mayarender.h"
+#include "libs/mayarender.h"
 #include "Tools/Tool.h"
 #include "Tools/ToolEdit.h"
 #include "Kernels.h"

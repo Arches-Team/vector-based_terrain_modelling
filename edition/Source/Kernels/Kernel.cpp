@@ -1,5 +1,5 @@
 #include "Kernels/Kernel.h"
-#include "smooth.h"
+#include "libs/smooth.h"
 #include "Eigen/Dense"
 #include <math.h>
 #include <tuple>
