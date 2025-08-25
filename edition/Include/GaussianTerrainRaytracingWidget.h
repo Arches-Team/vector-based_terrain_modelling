@@ -49,12 +49,6 @@ public:
 	// TODO: move in ToolBrush
 	float getBrushThreshold() const { return m_brushThreshold; }
 
-	//Debug
-	void normalizeKernels();
-	bool createDummyTerrain();	
-	void timing(int frames);
-
-
 private:
 	void loadShader();
 

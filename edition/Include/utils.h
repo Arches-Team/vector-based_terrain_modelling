@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QtCore/qpoint.h>
-#include <QtGui/qpolygon.h>
 
 #include "libs/evector.h"
 

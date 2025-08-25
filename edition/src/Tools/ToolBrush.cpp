@@ -35,8 +35,6 @@ void ToolBrush::addToSelection()
 		if (m_lasso.Inside(Vector2(k.posX(), k.posY())))
 		{
 			m_selectedKernels.emplace_back(m_kernels.add(k.clone()));
-			// TODO: WARNING: Don't take into account other kernel type
-			//m_selectedKernels.emplace_back(m_kernels.add<GaussianKernel>(k.get()));
 		}
 	}
 	if (m_kernels.size() != currentSize)
@@ -152,10 +150,8 @@ void ToolBrush::loadBrush(const QString& filename)
 			params.push_back(current);
 		i++;
 
-		// TODO: WARNING: fix for other type of kernel
 		if (i == utils::sizeKernel())
 		{
-			//m_selectedKernels.emplace_back(m_kernels.add<GaussianKernel>(kernel));
 			m_selectedKernels.emplace_back(m_kernels.add(kernel::create(static_cast<KernelType>(id), params)));
 			i = 0;
 			params.clear();
@@ -175,10 +171,6 @@ void ToolBrush::loadBrush(const QString& filename)
 		}
 	}
 
-	/*updateShowKernels();
-	updateRenderer();
-	emit m_parent->nbGaussiansChanged(m_parent->getNbGaussians());
-	m_parent->rasterizeGaussians();*/
 	update();
 }
 
@@ -230,7 +222,6 @@ void ToolBrush::keyPressedEvent(QKeyEvent* e)
 			if (sizeBefore > m_kernels.size())
 			{
 				emit m_parent->nbGaussiansChanged(m_parent->getNbGaussians());
-				//m_parent->UpdateGaussiansBuffer();
 				m_parent->rasterizeGaussians();
 			}
 

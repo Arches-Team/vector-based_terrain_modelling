@@ -248,7 +248,6 @@ void ToolEdit::move(const Vector2& intersection)
 
 	for (const auto k : m_selectedGaussians)
 	{
-		//std::cout << *k << std::endl;
 		const auto dist = Norm(p - k->pos()) / radius;
 		const auto falloff = 1 - dist;
 
@@ -258,8 +257,6 @@ void ToolEdit::move(const Vector2& intersection)
 		{
 			const auto newDist = Norm(p - k->pos()) / radius;
 			const auto factor = (dist - newDist + 1.);
-			//std::cout << "factor " << factor << std::endl;
-			//std::cout << "Norm " << variation << "\nNorm norm " << Normalized(variation) << std::endl;
 			k->scale(variation, factor);
 		}
 	}

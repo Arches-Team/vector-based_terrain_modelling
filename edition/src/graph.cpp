@@ -34,8 +34,6 @@ void Node::removeEdge(const Node& dest)
 		}).begin(),
 		m_isConnected.end()
 	);
-
-	//std::cout << "After removal " << *this;
 }
 
 void Graph::getThreeNeighborsNeighbors(const Node& node, std::unordered_set<Node*>& neighbors,
@@ -49,7 +47,6 @@ void Graph::getThreeNeighborsNeighbors(const Node& node, std::unordered_set<Node
 		{
 			if (!neighbors.contains(neighbor))
 			{
-				//std::cout << neighbor.nbNeighbors() << " ";
 				neighbors.insert(neighbor);
 				getThreeNeighborsNeighbors(*neighbor, neighbors, origNodePos, distanceThresh);
 			}
@@ -187,49 +184,10 @@ void Graph::reduceGraph(const double distance)
 			}
 			else
 			{
-				//Vector2 currentVec(0.);
-				//Vector2 vec(0.);
-				//if (Norm(edges[0].dest->pos() - edges[0].orig->pos()) < distance)
-				//{
-				//	currentVec = edges[0].dest->pos() - edges[0].orig->pos();
-				//	vec = edges[1].dest->pos() - edges[0].dest->pos();
-				//}
-				//else if (Norm(edges[1].dest->pos() - edges[1].orig->pos()) < distance)
-				//{
-				//	currentVec = edges[1].dest->pos() - edges[1].orig->pos();
-				//	auto vec = edges[0].dest->pos() - edges[1].dest->pos();
-				//}
-
-				//// Too close of another node, translate it to be in the middle
-				//if(currentVec != Vector2(0.))
-				//{
-				//	Vector2 normal1(-vec[1], vec[0]);
-				//	Vector2 normal2(vec[1], -vec[0]);
-				//	Normalize(normal1);
-				//	Normalize(normal2);
-				//	auto currentVec = edges[0].dest->pos() - edges[0].orig->pos();
-				//	auto proj = (Norm(currentVec) * std::cos(currentVec.Angle(vec)))*Normalized(vec);
-				//	auto projVec = edges[0].orig->pos() - proj;
-				//	double norm = Norm(projVec);
-
-				//	Vector2 normal;
-
-				//	if (normal1 * projVec > 0)
-				//		normal = normal1;
-				//	else
-				//		normal = normal2;
-
-					//edges[0].orig->moveTo(normal * norm);
-				//}
 				++it;
 			}
 			
 		}
-		//else if (edges.size() == 1 && Norm(edges[0].dest->pos() - it->pos()) < distance)
-		//{
-		//	//it = removeNode(it);
-		//	++it;
-		//}
 		else
 		{
 			++it;
@@ -262,7 +220,6 @@ void Graph::print(const QString& name) const
 
 	const auto image = Draw::CreateImage(scene, 2048, QRectF(0, 0,0, 0));
 	image.scaled(QSize(2048, 2048)).save(name);
-	//Draw::CreateVector(scene, name);
 }
 
 void Graph::draw(QGraphicsScene& scene, const QColor& color) const
@@ -308,9 +265,6 @@ void GraphControl::createCrestRiverGraph(Graph& crest, Graph& river, const Heigh
 		
 	hf.CompleteBreach();
 
-	/*HeightField gradientXHF = HeightField(hf);
-	HeightField gradientYHF = HeightField(hf);
-	HeightField gradientZero = HeightField(hf);*/
 	constexpr double eps = 1e-2;
 
 	// Compute the skeleton of the river
@@ -325,22 +279,13 @@ void GraphControl::createCrestRiverGraph(Graph& crest, Graph& river, const Heigh
 			sf2River(i, j) = 0;
 
 			const auto gradient = hf.Gradient(i, j);
-			/*gradientXHF(i, j) = gradient[0];
-			gradientYHF(i, j) = gradient[1];
-			if (abs(gradient[0]) - eps < 0. && abs(gradient[1])-eps < 0.)
-				gradientZero(i, j) = 1.;
-			else
-				gradientZero(i, j) = 0.;*/
+
 			if (streamValue > riverThreshold && !(abs(gradient[0]) - eps < 0. && abs(gradient[1]) - eps < 0.))
 				sf2River(i, j) = 1;
 		}
 	}
 
 	ScalarField2 skeletonRiver = sf2River.MorphSkeletonConnected(1);
-	/*hf.CreateImage(true).save("tmp/hf.png");
-	gradientXHF.CreateImage(true).save("tmp/gradientx.png");
-	gradientYHF.CreateImage(true).save("tmp/gradienty.png");
-	gradientZero.CreateImage(true).save("tmp/gradientzero.png");*/
 
 	// Compute the skeleton of the crest
 	HeightField hfC = hf;
@@ -364,7 +309,6 @@ void GraphControl::createCrestRiverGraph(Graph& crest, Graph& river, const Heigh
 	}
 
 	ScalarField2 skeletonCrest = sf2Crest.MorphSkeletonConnected(3);
-	// skeletonCrest.CreateImage(true).save("tmp/skeletonCrest.png");
 
 	// Merge the two skeletons in a QImage with 2 different colors
 	QImage imgSkeleton(hf.GetSizeX(), hf.GetSizeY(), QImage::Format_RGB32);
@@ -377,7 +321,6 @@ void GraphControl::createCrestRiverGraph(Graph& crest, Graph& river, const Heigh
 			if (skeletonRiver(i, j) == 1) imgSkeleton.setPixel(i, j, qRgb(0, 0, 255));
 		}
 	}
-	// imgSkeleton.save("tmp/skeletonCombined.png");
 
 	// Create the graph
 	Array2I indexesArrayCrest(Box2(hf.GetBox()), hf.GetSizeX(), hf.GetSizeY(), -1);
@@ -445,122 +388,6 @@ void GraphControl::createCrestRiverGraph(Graph& crest, Graph& river, const Heigh
 		}
 	}
 }
-
-void GraphControl::test(Graph& g)
-{
-	int node0 = g.addNode(Vector2(0, 10));
-	int node1 = g.addNode(Vector2(10, 0));
-	int node2 = g.addNode(Vector2(20, 40));
-	int node3 = g.addNode(Vector2(30, 10));
-	int node4 = g.addNode(Vector2(40, 30));
-
-	g.addEdge(node0, node1);
-	g.addEdge(node0, node2);
-	g.addEdge(node0, node3);
-	g.addEdge(node0, node4);
-	g.addEdge(node1, node2);
-	g.addEdge(node1, node4);
-	g.addEdge(node2, node3);
-	g.addEdge(node2, node4);
-	g.addEdge(node3, node4);
-
-	g.print("tmp/test.pdf");
-
-	std::cout << g;
-	g.removeNode(2);
-	std::cout << g;
-	g.print("tmp/test2.pdf");
-	/*g.removeNode(2);
-	std::cout << g;
-	g.print("tmp/test4.pdf");*/
-
-	g.reduceGraph();
-
-	g.print("tmp/test4.pdf");
-
-	g.clear();
-}
-
-void GraphControl::testReduce(Graph& g)
-{
-	int node0 = g.addNode(Vector2(0, 10));
-	int node1 = g.addNode(Vector2(10, 0));
-	int node2 = g.addNode(Vector2(20, 40));
-	int node3 = g.addNode(Vector2(30, 10));
-	int node4 = g.addNode(Vector2(40, 30));
-
-	g.addEdge(node0, node1);
-	g.addEdge(node1, node2);
-	g.addEdge(node2, node3);
-	g.addEdge(node3, node4);
-
-	g.print("tmp/test.pdf");
-	std::cout << g;
-	g.reduceGraph();
-	g.print("tmp/test4.pdf");
-	std::cout << g;
-	g.clear();
-}
-
-void GraphControl::complexTest(Graph& g)
-{
-	// Add nodes
-	int node0 = g.addNode(Vector2(0, 10));
-	int node1 = g.addNode(Vector2(10, 0));
-	int node2 = g.addNode(Vector2(20, 40));
-	int node3 = g.addNode(Vector2(30, 10));
-	int node4 = g.addNode(Vector2(40, 30));
-	int node5 = g.addNode(Vector2(50, 50));
-	int node6 = g.addNode(Vector2(60, 10));
-
-	// Add edges
-	g.addEdge(node0, node1);
-	g.addEdge(node0, node2);
-	g.addEdge(node1, node3);
-	g.addEdge(node2, node4);
-	g.addEdge(node3, node4);
-	g.addEdge(node4, node5);
-	g.addEdge(node5, node6);
-	g.addEdge(node6, node0);
-
-	// Print the initial graph
-	g.print("tmp/complex_test_initial.pdf");
-	std::cout << "Initial graph:" << std::endl;
-	std::cout << g;
-
-	// Remove a node and print the graph
-	g.removeNode(2);
-	g.print("tmp/complex_test_after_remove_node2.pdf");
-	std::cout << "Graph after removing node 2:" << std::endl;
-	std::cout << g;
-
-
-	// Add more edges and print the graph
-	g.addEdge(node0, node3);
-	g.addEdge(node1, node4);
-	g.print("tmp/complex_test_after_add_edges.pdf");
-	std::cout << "Graph after adding more edges:" << std::endl;
-	std::cout << g;
-
-	// Remove another node and print the graph
-	g.removeNode(5);
-	g.print("tmp/complex_test_after_remove_node5.pdf");
-	std::cout << "Graph after removing node 5:" << std::endl;
-	std::cout << g;
-
-	// Reduce the graph with a threshold and print the graph
-	g.reduceGraph();
-	g.print("tmp/complex_test_after_reduce.pdf");
-	std::cout << "Graph after reducing with a threshold of 20.0:" << std::endl;
-	std::cout << g;
-
-	// Clear the graph
-	g.clear();
-	g.print("tmp/complex_test_after_clear.pdf");
-	std::cout << "Graph after clearing:" << std::endl;
-	std::cout << g;
-}
-
 
 std::ostream& operator<<(std::ostream& s, const Node& n)
 {

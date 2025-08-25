@@ -117,7 +117,4 @@ class GraphControl
 {
 public:
 	static void createCrestRiverGraph(Graph& crest, Graph& river, const HeightField& _hf, double threshold = 70.);
-	static void test(Graph& g);
-	static void testReduce(Graph& g);
-	static void complexTest(Graph& g);
 };

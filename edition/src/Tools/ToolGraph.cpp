@@ -80,27 +80,6 @@ void ToolGraph::createSprings()
 {
 	m_springs.clear();
 
-	// Delaunay spring system
-	// auto points = m_graphCrest.getNodesPosition();
-	// auto mesh = Mesh2::Delaunay(points);
-	// std::unordered_set<std::pair<int, int>, pair_hash> nodeIndexes;
-	// const auto& indexes = mesh.Indexes();
-	//
-	// for (int i = 0; i < indexes.size(); i += 3)
-	// {
-	// 	nodeIndexes.insert(std::pair(indexes[i], indexes[i + 1]));
-	// 	nodeIndexes.insert(std::pair(indexes[i + 1], indexes[i + 2]));
-	// 	nodeIndexes.insert(std::pair(indexes[i + 2], indexes[i]));
-	// }
-	//
-	// for (const auto& index : nodeIndexes)
-	// {
-	// 	auto& orig = m_graphCrest[index.first];
-	// 	auto& dest = m_graphCrest[index.second];
-	//
-	// 	m_springs.emplace_back(Spring(&orig, &dest, Norm(dest.pos() - orig.pos()), m_k));
-	// }
-
 	for (const auto& node : m_graphCrest)
 	{
 		for (const auto& edge : node.connectedTo())
@@ -216,7 +195,6 @@ void ToolGraph::moveNode(Node* node, const Vector2& offset)
 
 void ToolGraph::updateKernels()
 {
-	//std::cout << m_kernels[5] << std::endl;
 	std::vector<Kernel*> hasMoved;
 	QVector<Vector2> hasMovedPointsSample;
 
@@ -257,16 +235,11 @@ void ToolGraph::updateKernels()
 			const auto newLength = Norm(newVec);
 			const auto oldAmplitude = kernel->amplitude();
 
-			float factor = (newLength / oldLength);
-			constexpr float percentageFactorMax = 0.5f;
+			float factor = newLength / oldLength;
 			if (abs(factor - 1) - 1e-6 > 0 && m_scaleKernel)
 			{
-				//factor = Clamp(factor, 1.f - percentageFactorMax, 1.f + percentageFactorMax);
 				kernel->scale(newVec, factor);
 			}
-				
-			//kernel->scale(static_cast<float>(newLength) / oldLength, kernel->pos());
-			//kernel->setAmplitude(oldAmplitude);
 		}
 		m_edgeLinksKernel[edge].origOldPos = edge->orig->pos();
 		m_edgeLinksKernel[edge].destOldPos = edge->dest->pos();
@@ -356,21 +329,17 @@ void ToolGraph::initGraph()
 		constexpr double distance = 0.1;
 		constexpr double threshold = 70.;
 		GraphControl::createCrestRiverGraph(m_graphCrest, m_graphRiver, *((HeightField *)(m_parent->getHF())), threshold);
-		//GraphControl::createCrestRiverGraph(m_graphRiver, m_graphCrest, HeightField(*sf));
+
 		m_graphCrest.reduceGraph(distance);
 		m_graphRiver.reduceGraph(distance);
 		associateKernelsToEdges();
-		//updateRenderer();
+
 
 		for (const auto& node : m_graphCrest)
 		{
 			m_nbLinesRenderer += m_nodeCircleSegment * 2;
 			m_nbLinesRenderer += static_cast<int>(node.connectedTo().size()) * 2;
 		}
-
-		/*m_graphRenderer = std::make_unique<MayaSimpleRendererColors>(m_nbLinesRenderer, m_nbLinesRenderer, GL_LINES);
-		m_graphRenderer->setDepthTest(false);
-		m_graphRenderer->setLineWidth(1.);*/
 
 		updateRenderer();
 	}
@@ -441,9 +410,6 @@ void ToolGraph::mousePressEvent(QMouseEvent* e)
 {
 	if (m_parent->getHF() != nullptr)
 	{
-		auto x = e->globalPosition().x();
-		auto y = e->globalPosition().y();
-
 		const HeightField* h = (HeightField*)m_parent->getHF();
 		Vector intersectionPoint;
 		double t;
@@ -508,22 +474,6 @@ void ToolGraph::mouseReleaseEvent(QMouseEvent* e)
 
 	m_parent->recordHF("graph");
 	recordGraph();
-
-
-	// Remove 0. amplitude kernels
-	// std::vector<Kernel>& kernels = m_kernels.getKernels();
-	// const auto newEnd = std::remove_if(kernels.begin(), kernels.end(),
-	//                                    [](Kernel& k) { return !k.isShown(); });
-	//
-	// const auto sizeBefore = kernels.size();
-	// kernels.erase(newEnd, kernels.end());
-	//
-	// if (sizeBefore > kernels.size())
-	// {
-	// 	emit m_parent->nbGaussiansChanged(m_parent->getNbGaussians());
-	// 	m_parent->rasterizeGaussians();
-	// }
-	// initGraph();
 }
 
 void ToolGraph::mouseWheelEvent(QWheelEvent* e)
@@ -590,7 +540,7 @@ void ToolGraph::mouseWheelEvent(QWheelEvent* e)
 
 		// Update the amplitude
 		const double variation = 1. + angle / 100.;
-		//std::cout << variation << std::endl;
+
 		for (const auto node : visited)
 		{
 			for (const auto& edge : m_edgeLinksKernel | std::views::keys)
@@ -636,7 +586,6 @@ void ToolGraph::keyPressedEvent(QKeyEvent* e)
 		std::cout << "Delete" << std::endl;
 		fillSelectionNodes(getClosestNode(m_lastIntersection));
 
-		auto& kernels = m_kernels.getKernels();
 		std::unordered_set<Kernel*> kernelsToRemove;
 
 		for (const Node* node : m_nodesSelection)
@@ -702,11 +651,6 @@ void ToolGraph::updateRenderer()
 	QVector<VectorFloat> points(m_nbLinesRenderer);
 	QVector<ColorFloat> colors(m_nbLinesRenderer);
 
-	//const ColorFloat colorEdge(0.2f, 0.2f, 0.2f);
-	//const ColorFloat colorNode(0.8f, 0.2f, 0.2f);
-	//const ColorFloat colorNodeSelected(0.2f, 0.8f, 0.2f);
-
-
 	const ColorFloat colorEdge(0.2f, 0.2f, 0.2f);
 	const ColorFloat colorNode(0.7f, 0.7f, 0.7f);
 	const ColorFloat colorNodeSelected(0.7f, 0.1f, 0.7f);
@@ -749,9 +693,6 @@ void ToolGraph::updateRenderer()
 			colors[cpt] = colorEdge;
 			cpt++;
 		}
-
-		//std::cout << cpt << "\n";
-	    //std::cout << normPos(node.pos()) << "\n";
 	}
 	
 	if (m_influenceEnabled)
@@ -797,6 +738,4 @@ void ToolGraph::updateRenderer()
 	m_graphRenderer = std::make_unique<MayaSimpleRendererColors>(points, colors, GL_LINES);
 	m_graphRenderer->setDepthTest(false);
 	m_graphRenderer->setLineWidth(2.0);
-
-	//m_parent->update();
 }

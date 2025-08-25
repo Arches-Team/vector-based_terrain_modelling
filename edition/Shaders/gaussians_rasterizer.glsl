@@ -35,6 +35,7 @@ uniform float noiseLevel;
 uniform int gaussianOffset;
 uniform int showNbGaussians;
 uniform int gaussianID;
+uniform int detailsID;
 uniform int detailsSize;
 int nx = nxy.x;
 int ny = nxy.y;
@@ -122,7 +123,7 @@ float Height(vec2 p)
             float val = exp(-pow(z, beta)) * amplitude;
             ret += val;
         }
-        else if(id == 1)
+        else if(id == detailsID)
         {
             float val = exp(-z) * amplitude;
 

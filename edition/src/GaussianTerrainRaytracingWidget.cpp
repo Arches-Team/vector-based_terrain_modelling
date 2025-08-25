@@ -18,23 +18,6 @@
 #include <QtWidgets/qmessagebox.h>
 
 
-// -- BEGIN DEBUG --
-double tic(int mode = 0) {
-	static std::chrono::time_point<std::chrono::steady_clock> t_start;
-
-	if (mode == 0)
-		t_start = std::chrono::high_resolution_clock::now();
-	else {
-		auto t_end = std::chrono::high_resolution_clock::now();
-		return (t_end - t_start).count() * 1E-9 * 1000;
-		//std::cout << "Elapsed time is " << (t_end - t_start).count() * 1E-9 * 1000 << " ms\n";
-	}
-	return 0;
-}
-double toc() { return tic(1); }
-
-// -- END DEBUG --
-
 GaussianTerrainRaytracingWidget::GaussianTerrainRaytracingWidget(): m_accelerationGridShader(), m_rasterizerShader()
 {
 	// Create the log folder
@@ -92,16 +75,8 @@ void GaussianTerrainRaytracingWidget::initializeGL()
 	clear();
 }
 
-//#include <algorithm>
-//#include <random>
-//
-//auto rd = std::random_device{};
-//auto rng = std::default_random_engine{ rd() };
-
 void GaussianTerrainRaytracingWidget::ReloadShaders()
 {
-	//std::shuffle(std::begin(m_kernels), std::end(m_kernels), rng);
-
 	TerrainRaytracingWidget::ReloadShaders();
 	loadShader();
 }
@@ -219,34 +194,12 @@ void GaussianTerrainRaytracingWidget::addDetailsKernel(const ScalarField2& gt)
 		pointNorm = (pointNorm * 2.);
 		pointNorm[0] -= 1.;
 		pointNorm[1] -= 1.;
-
-		auto current = m_kernels.add<DetailsKernel>({ detailsKernelSize, detailsKernelSize, 0., 0.5f, static_cast<float>(pointNorm[1]), static_cast<float>(pointNorm[0]), 
+		
+		m_kernels.add<DetailsKernel>({ detailsKernelSize, detailsKernelSize, 0., 0.5f, static_cast<float>(pointNorm[1]), static_cast<float>(pointNorm[0]),
 			(static_cast<float>(pointNorm[0])+1.f)/2.f, (static_cast<float>(pointNorm[1]) + 1.f) / 2.f });
 	}
 
 	m_originalKernels = Kernels(m_kernels);
-
-    /*const int sizeGrid = 3;
-	for(int i = 0 ; i < sizeGrid+1 ; ++i)
-	{
-	    for(int j= 0 ; j < sizeGrid+1 ; ++j)
-	    {
-			float percentagei = static_cast<float>(i) / sizeGrid;
-			float percentagej = static_cast<float>(j) / sizeGrid;
-			auto current = m_kernels.add<DetailsKernel>({ (2.f/sizeGrid)/2.f, (2.f / sizeGrid)/2.f, 0., 0.5f, 2.f*percentagei-1.f, 2.f* percentagej-1.f,
-			percentagei, percentagej });
-
-			std::cout << *current << std::endl;
-	    }
-	}*/
-
-	//m_kernels.add<DetailsKernel>({ 1.f, 1.f, 0., 0.5f, 0.f, 0.f,
-			//static_cast<float>(.5), static_cast<float>(.5) });
-
-	/*m_kernels.add<DetailsKernel>({ 0.1f, 0.1f, 0., 0.5f, 0.f, 0.f,
-			static_cast<float>(.5), static_cast<float>(.5) });
-	m_kernels.add<DetailsKernel>({ 0.1f, 0.1f, 0., 0.5f, 0.1f, 0.1f,
-			static_cast<float>(.55), static_cast<float>(.55) });*/
 
 	emit nbGaussiansChanged(getNbGaussians());
 	rasterizeGaussians();
@@ -323,25 +276,16 @@ void GaussianTerrainRaytracingWidget::initHF(int size)
 	}
 }
 
-/*
-* \brief Check if the control key is pressed
-*/ 
 bool GaussianTerrainRaytracingWidget::isControlShiftAltPressed(QMouseEvent* e)
 {
 	return (e->modifiers() & Qt::ControlModifier) || isShiftAltPressed(e);
 }
 
-/*
-* \brief Check if the shift or alt key is pressed
-*/
 bool GaussianTerrainRaytracingWidget::isShiftAltPressed(QMouseEvent* e)
 {
 	return (e->modifiers() & Qt::ShiftModifier) || (e->modifiers() & Qt::AltModifier);
 }
 
-/*
-* \brief Reset the camera to the default position
-*/
 void GaussianTerrainRaytracingWidget::resetCam()
 {
 	auto box = hf->GetBox();
@@ -351,9 +295,6 @@ void GaussianTerrainRaytracingWidget::resetCam()
 	SetCamera(cam);
 }
 
-/*
-* \brief Paint the scene
-*/
 void GaussianTerrainRaytracingWidget::paintGL()
 {
 	glUseProgram(shaderProgram);
@@ -376,18 +317,12 @@ void GaussianTerrainRaytracingWidget::paintGL()
 		m_currentTool->render();
 }
 
-/*
-* \brief Set the albedo texture
-*/
 void GaussianTerrainRaytracingWidget::SetAlbedo(const QImage& img)
 {
 	m_texture = img;
 	TerrainRaytracingWidget::SetAlbedo(img);
 }
 
-/*
-* \brief Update the influence renderers
-*/
 void GaussianTerrainRaytracingWidget::updateInfluenceRenderers()
 {
 	m_influenceRenderer = nullptr;
@@ -401,10 +336,7 @@ void GaussianTerrainRaytracingWidget::updateInfluenceRenderers()
 		QVector<VectorFloat> points(m_influenceCircleSegment * m_kernels.size() * 2);
 		QVector<ColorFloat> colors(m_influenceCircleSegment * m_kernels.size() * 2);
 		auto boxSize = Vector2(h.GetBox().Size());
-		auto maxRange = std::max(boxSize[0], boxSize[1]);
 
-    //const ColorFloat colorNeg(0.2f, 0.2f, 0.8f);
-    //const ColorFloat colorPos(0.8f, 0.2f, 0.2f);
 		const ColorFloat colorNeg(0.2f, 0.2f, 0.8f);
 		const ColorFloat colorPos(0.9f, 0.8f, 0.8f);
 		const float maxAmplitude = m_kernels.getMaxAbsAmplitude();
@@ -418,14 +350,12 @@ void GaussianTerrainRaytracingWidget::updateInfluenceRenderers()
 
 			// Alpha value
 			color[3] = std::clamp((std::abs(m_kernels[i].amplitude()) / maxAmplitude)+0.f, 0.4f, 1.f);
-			//color[3] = 1.;
 
 			if (i >= m_nbGaussiansToShow)
 				color[3] = 0.;
 
 			auto ellipse = m_kernels[i].getEllipse(1.f);
-			
-			//std::cout << i;
+
 
 			for (int j = 1; j < m_influenceCircleSegment; j++)
 			{
@@ -447,11 +377,9 @@ void GaussianTerrainRaytracingWidget::updateInfluenceRenderers()
 			cpt++;
 		}
 
-		// TODO: fix MayaSimpleRendererColors::update
 		m_influenceRenderer = std::make_unique<MayaSimpleRendererColors>(points, colors, GL_LINES);
 		m_influenceRenderer->setDepthTest(false);
 		m_influenceRenderer->setLineWidth(1.);
-		//m_influenceRenderer->Update(points, colors);
 	}
 }
 
@@ -545,7 +473,6 @@ void GaussianTerrainRaytracingWidget::UpdateGaussiansBuffer()
 {
 	if (!m_kernels.empty())
 	{
-		//normalizeKernels();
 		auto kernelsArray = m_kernels.getArray();
 		m_ssbo_gaussians.SetSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float) * kernelsArray.size(),
 		                            kernelsArray.data());
@@ -554,47 +481,12 @@ void GaussianTerrainRaytracingWidget::UpdateGaussiansBuffer()
 	}
 }
 
-void GaussianTerrainRaytracingWidget::normalizeKernels()
-{
-	int i = 0;
-	for (auto& k : m_kernels)
-	{
-		//if (i < 10)
-		//	std::cout << "Before" << *k << std::endl;
-		//k->normalize();
-		i++;
-		//if(i< 10)
-		//	std::cout << "After" << *k << std::endl;
-	}
-}
-
-bool GaussianTerrainRaytracingWidget::createDummyTerrain()
-{
-	bool ret = false;
-	if (hf == nullptr)
-	{
-
-		initHF();
-		UseElevationShading(true);
-
-	}
-	clear();
-	m_kernels.add<GaussianKernel>({ 0.05f, 0.1f, 1.f, 2.5f, 0.3f, 0.f, 0.f, 1.f });
-	m_kernels.add<GaussianKernel>({ 0.05f, 0.1f, 1.f, 0.f, 0.1f, 0.4f, 0.f, 1.f });
-	m_kernels.add<GaussianKernel>({ 0.005f, 0.1f, 1.f, 0.1f, 0.1f, -0.4f, 0.f, 1.f });
-
-	emit nbGaussiansChanged(m_kernels.size());
-	rasterizeGaussians();
-	resetCam();
-	return false;
-}
-
 void GaussianTerrainRaytracingWidget::exportToRes(int res)
 {
 	const QString filename = QFileDialog::getOpenFileName(this, tr("Open Ground Truth"), QString(),
 		tr("Image files(*.jpg, *.png)"));
 
-	// TODO: rework the entire function, a lot of copy-paste to code faster
+	// TODO: rework the entire function, a lot of copy-paste
 
 	if (filename.isEmpty())
 	{
@@ -754,47 +646,16 @@ void GaussianTerrainRaytracingWidget::rasterizeGaussians()
 		m_gridCellMappingsBuffer.BindAt(GL_SHADER_STORAGE_BUFFER, 3);
 		m_detailsBuffer.BindAt(GL_SHADER_STORAGE_BUFFER, 4);
 
-		/*glUniform2i(0, m_gridSize, m_gridSize);
-		glUniform1i(1, m_maxPerCell);
-		glUniform2i(2, hf->GetSizeX(), hf->GetSizeY());
-		glUniform2f(3, zmin, zmax);
-		glUniform1f(4, m_noiseLevel);
-		glUniform1i(5, utils::sizeKernel());
-		glUniform3i(6, m_nbGaussiansToShow,
-			static_cast<int>(KernelType::GAUSSIAN), static_cast<int>(KernelType::DETAILS));*/
-		//glUniform1i(7, m_details.GetSizeX());
-
 		glUniform2i(glGetUniformLocation(m_rasterizerShader, "gridResolution"), m_gridSize, m_gridSize);
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "maxPerCell"), m_maxPerCell);
-		//glUniform1i(glGetUniformLocation(m_rasterizerShader, "gaussiansSize"), m_kernels.size() * utils::sizeKernel());
 		glUniform2i(glGetUniformLocation(m_rasterizerShader, "nxy"), hf->GetSizeX(), hf->GetSizeY());
-		//glUniform2f(glGetUniformLocation(m_rasterizerShader, "a"), bbox[0][0], bbox[0][1]);
-		//glUniform2f(glGetUniformLocation(m_rasterizerShader, "b"), bbox[1][0], bbox[1][1]);
 		glUniform2f(glGetUniformLocation(m_rasterizerShader, "zRange"), zmin, zmax);
 		glUniform1f(glGetUniformLocation(m_rasterizerShader, "noiseLevel"), m_noiseLevel);
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "gaussianOffset"), utils::sizeKernel());
-		//glUniform3i(glGetUniformLocation(m_rasterizerShader, "showNbGaussiansGaussianIDDetailsID"), m_nbGaussiansToShow, 
-			//static_cast<int>(KernelType::GAUSSIAN), static_cast<int>(KernelType::DETAILS));
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "showNbGaussians"), m_nbGaussiansToShow);
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "gaussianID"), static_cast<int>(KernelType::GAUSSIAN));
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "detailsID"), static_cast<int>(KernelType::DETAILS));
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "detailsSize"), m_details.GetSizeX());
-
-		
-		//glUniform1i(glGetUniformLocation(m_rasterizerShader, "padding"), 0);
-
-		//if(m_kernels.size() > 0)
-		//	for (auto f : m_kernels[m_kernels.size() -1].get())
-		//		std::cout << f << " ";
-		//for (int i = 0; i < 10; ++i)
-		//{
-		//	for (auto f : m_kernels[i].get())
-		//		std::cout << f << " ";
-		//	std::cout << (static_cast<int>(KernelType::GAUSSIAN) == int(m_kernels[i].get()[0]));
-		//	std::cout << "\n";
-		//	//std::cout << m_kernels[i].get()[0] << " ";
-		//}
-		//std::cout << std::endl;
 
 		int dispatchSize = (max(hf->GetSizeX(), hf->GetSizeY()) / 8) + 1;
 
@@ -1020,20 +881,3 @@ void GaussianTerrainRaytracingWidget::updateTranslateOnlyGraphTool(const bool tr
 		tool->setTranslateOnly(translate);
 	}
 }
-
-
-void GaussianTerrainRaytracingWidget::timing(int frames)
-{
-	std::vector<double> time;
-	for (int i = 0; i < frames; ++i)
-	{
-		tic();
-		UpdateGaussiansBuffer();
-		rasterizeGaussians();
-		time.emplace_back(toc());
-	}
-	double sum = std::accumulate(time.begin(), time.end(), 0.);
-	double mean = sum / time.size();
-	std::cout << "Timing average on " << frames << " frames: " << mean << " ms." << std::endl;
-}
-

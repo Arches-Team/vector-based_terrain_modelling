@@ -63,7 +63,6 @@ public:
 	double distCenter(const Vector2& p) const;
 	Ellipse2 getEllipse(const float sigma = 3.f) const;
 	bool isInside(const Vector2& p) const;
-	bool intersectRectangle(const Vector2& p1, const Vector2& p2);
 
 	void scale(float scale, const Vector2& o);
 	void scale(Vector2 axis, float factor);

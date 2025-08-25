@@ -88,20 +88,6 @@ void Kernels::sort()
 	);
 }
 
-//Kernel& Kernels::add(const Kernel& kernel)
-//{
-//	return m_kernels.emplace_back(std::make_unique<Kernel>(kernel));
-//}
-
-//TODO : fix with the new Kernels architecture
-//Kernel Kernels::getMeanParameters()
-//{
-//	
-//	/*const Kernel sumTotal = std::accumulate(m_kernels.begin(), m_kernels.end(), Kernel(0, 0, 0, 0, 0, 0, 0, 0),
-//	                                        [](const Kernel& sum, const Kernel& kernel) { return sum + kernel; });
-//	return sumTotal / static_cast<float>(m_kernels.size());*/
-//}
-
 float Kernels::getMaxAbsAmplitude()
 {
 	float maxAmplitude = 0.;

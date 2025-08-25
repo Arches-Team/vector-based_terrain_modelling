@@ -159,33 +159,6 @@ MayaSimpleRendererColors::MayaSimpleRendererColors(QVector<VectorFloat> lines, Q
 */
 void MayaSimpleRendererColors::Update(QVector<VectorFloat> lines, QVector<ColorFloat> colors)
 {
-    /*glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, lines.size() * sizeof(VectorFloat), lines.constData());
-
-    glBindBuffer(GL_ARRAY_BUFFER, CBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, colors.size() * sizeof(ColorFloat), colors.constData());
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << err << std::endl;
-    }*/
-
-    /*map = lines.data();
-    colorMap = colors.data();*/
-
-    //Upload data and signal OpenGL
-    //for (int i = 0; i < lines.size(); i++)
-    //{
-    //    map[i] = lines[i];
-    //}
-
-    //// Upload color data and signal OpenGL
-    //for (int i = 0; i < colors.size(); i++)
-    //{
-    //    colorMap[i] = colors[i];
-    //}
-
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     map = (VectorFloat*)glMapBufferRange(GL_ARRAY_BUFFER, 0, lines.size() * sizeof(VectorFloat), GL_MAP_WRITE_BIT | GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT);
 
@@ -207,9 +180,6 @@ void MayaSimpleRendererColors::Update(QVector<VectorFloat> lines, QVector<ColorF
     glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT);
 }
 
-/*!
-\brief Draw the renderer.
-*/
 void MayaSimpleRendererColors::Draw()
 {
     if (depthTest)
@@ -236,8 +206,6 @@ void MayaSimpleRendererColors::Draw()
     glBindBuffer(GL_ARRAY_BUFFER, CBO);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(ColorFloat), (void*)0);
 
-    // Should update when camera can create it's own matrix
-
     //Get matrices and send it to the gpu
     float viewMatTemp[16];
 
@@ -257,9 +225,6 @@ void MayaSimpleRendererColors::Draw()
     glDisable(GL_BLEND);
 }
 
-/*!
-\brief Delete all buffers
-*/
 void MayaSimpleRendererColors::DeleteBuffers()
 {
     if (VBO != 0) {
@@ -271,5 +236,4 @@ void MayaSimpleRendererColors::DeleteBuffers()
     if (CBO != 0) {
         glDeleteBuffers(1, &CBO); CBO = 0;
     }
-    // Should delete program here (possible bug)
 }
