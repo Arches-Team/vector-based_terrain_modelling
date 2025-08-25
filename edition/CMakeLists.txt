@@ -1,4 +1,4 @@
-# Tested on Windows 10 - in order to proper work, you have to set this env variable to point to your Qt install dir
+# Tested on Windows - in order to proper work, you have to set this env variable to point to your Qt install dir
 # CMAKE_PREFIX_PATH=Qt/versionx.x/compiler/lib/cmake
 cmake_minimum_required(VERSION 3.16)
 project(VectorTerrains VERSION 1.0.0 LANGUAGES CXX)
@@ -16,8 +16,8 @@ find_package(GLEW)
 if (NOT GLEW_FOUND)
     message("Adding GLEW manually for Windows...")
     set(PLATFORM x64)
-    set(GLEW_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/GL/$(PLATFORM)/include)
-    set(GLEW_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/GL/$(PLATFORM)/lib/glew32.lib)
+    set(GLEW_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include/libs/GL/include)
+    set(GLEW_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lib/$(PLATFORM)/glew32.lib)
     set(GLEW_FOUND true)
 endif ()
 

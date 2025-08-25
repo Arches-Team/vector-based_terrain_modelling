@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _MSC_VER
-#include "glew.h"
+#include "libs/GL/glew.h"
 #else
 #include "GL/glew.h"
 #endif

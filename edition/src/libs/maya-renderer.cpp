@@ -1,3 +1,4 @@
+#include "libs/GL/glew.h"
 #include "libs/mayarender.h"
 
 #include "libs/cpu.h"

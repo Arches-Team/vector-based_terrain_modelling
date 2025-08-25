@@ -43,7 +43,6 @@ void ToolBrush::addToSelection()
 	{
 		emit m_parent->nbGaussiansChanged(m_parent->getNbGaussians());
 		updateShowKernels();
-		//m_parent->UpdateGaussiansBuffer();
 		m_parent->rasterizeGaussians();
 	}
 }
