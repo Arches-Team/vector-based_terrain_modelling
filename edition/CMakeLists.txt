@@ -38,7 +38,6 @@ set(SOURCE_FILES
         src/Kernels/GaussianKernel.cpp
         src/Kernels/Kernel.cpp
 
-        src/libs/analyticfield.cpp
         src/libs/analyticpalette.cpp
         src/libs/analyticscalarfield.cpp
         src/libs/array.cpp

@@ -1004,6 +1004,11 @@ QProgressBar::chunk
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+    </font>
+   </property>
    <layout class="QHBoxLayout">
     <property name="spacing">
      <number>0</number>
@@ -1049,6 +1054,11 @@ QProgressBar::chunk
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="2" column="1">
            <widget class="QPushButton" name="btn_addDetails">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Add Primitives Details</string>
             </property>
@@ -1056,6 +1066,11 @@ QProgressBar::chunk
           </item>
           <item row="2" column="0">
            <widget class="QPushButton" name="btn_loadShader">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Reload shader</string>
             </property>
@@ -1063,6 +1078,11 @@ QProgressBar::chunk
           </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="openGaussianFile">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Load Primitives</string>
             </property>
@@ -1070,6 +1090,11 @@ QProgressBar::chunk
           </item>
           <item row="1" column="1">
            <widget class="QPushButton" name="btn_saveGaussian">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Save Primitives</string>
             </property>
@@ -1077,6 +1102,11 @@ QProgressBar::chunk
           </item>
           <item row="4" column="0">
            <widget class="QPushButton" name="btn_exporthighres">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Export high-res</string>
             </property>
@@ -1084,6 +1114,11 @@ QProgressBar::chunk
           </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="btn_openTerrain">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Load Heightfield</string>
             </property>
@@ -1091,6 +1126,11 @@ QProgressBar::chunk
           </item>
           <item row="0" column="0">
            <widget class="QPushButton" name="btn_clear">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Empty Terrain</string>
             </property>
@@ -1114,6 +1154,11 @@ QProgressBar::chunk
           </item>
           <item row="4" column="1">
            <widget class="QComboBox" name="combo_exporthighres">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="currentText">
              <string>128x128</string>
             </property>
@@ -1172,6 +1217,11 @@ QProgressBar::chunk
             <height>23</height>
            </rect>
           </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+           </font>
+          </property>
           <property name="text">
            <string>Show influence of the primitives</string>
           </property>
@@ -1184,6 +1234,11 @@ QProgressBar::chunk
             <width>271</width>
             <height>20</height>
            </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+           </font>
           </property>
           <property name="minimum">
            <number>1</number>
@@ -1213,6 +1268,11 @@ QProgressBar::chunk
             <height>20</height>
            </rect>
           </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+           </font>
+          </property>
           <property name="text">
            <string>Placeholder</string>
           </property>
@@ -1225,6 +1285,11 @@ QProgressBar::chunk
             <width>71</width>
             <height>16</height>
            </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+           </font>
           </property>
           <property name="text">
            <string>Nb primitives</string>
@@ -1239,6 +1304,11 @@ QProgressBar::chunk
             <height>16</height>
            </rect>
           </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+           </font>
+          </property>
           <property name="text">
            <string>Amplitude</string>
           </property>
@@ -1252,6 +1322,11 @@ QProgressBar::chunk
             <height>16</height>
            </rect>
           </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+           </font>
+          </property>
           <property name="text">
            <string>Details level</string>
           </property>
@@ -1264,6 +1339,11 @@ QProgressBar::chunk
             <width>131</width>
             <height>20</height>
            </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+           </font>
           </property>
           <property name="minimum">
            <number>10</number>
@@ -1292,6 +1372,11 @@ QProgressBar::chunk
             <width>131</width>
             <height>20</height>
            </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+           </font>
           </property>
           <property name="minimum">
            <number>0</number>
@@ -1328,6 +1413,11 @@ QProgressBar::chunk
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="1" column="1">
            <widget class="QPushButton" name="btn_graphTool">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Crest Graph</string>
             </property>
@@ -1335,6 +1425,11 @@ QProgressBar::chunk
           </item>
           <item row="0" column="0">
            <widget class="QPushButton" name="btn_handTool">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Hand</string>
             </property>
@@ -1342,6 +1437,11 @@ QProgressBar::chunk
           </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="btn_eraseTool">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="toolTip">
              <string>Ctrl + Wheel : change radius size</string>
             </property>
@@ -1352,6 +1452,11 @@ QProgressBar::chunk
           </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="btn_moveTool">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Region</string>
             </property>
@@ -1362,8 +1467,13 @@ QProgressBar::chunk
        </item>
        <item>
         <widget class="QStackedWidget" name="toolOptionsWidget">
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+          </font>
+         </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="page_2"/>
          <widget class="QWidget" name="page_3">
@@ -1385,6 +1495,11 @@ QProgressBar::chunk
              <height>75</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+            </font>
+           </property>
            <property name="title">
             <string>Region Parameters</string>
            </property>
@@ -1396,6 +1511,11 @@ QProgressBar::chunk
               <width>181</width>
               <height>20</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
             </property>
             <property name="minimum">
              <number>0</number>
@@ -1425,6 +1545,11 @@ QProgressBar::chunk
               <height>16</height>
              </rect>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Mask threshold</string>
             </property>
@@ -1437,6 +1562,11 @@ QProgressBar::chunk
               <width>92</width>
               <height>28</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
             </property>
             <property name="text">
              <string>Apply tool</string>
@@ -1474,6 +1604,11 @@ QProgressBar::chunk
               <height>28</height>
              </rect>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Open</string>
             </property>
@@ -1486,6 +1621,11 @@ QProgressBar::chunk
               <width>131</width>
               <height>28</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
             </property>
             <property name="text">
              <string>Save</string>
@@ -1518,6 +1658,11 @@ QProgressBar::chunk
               <height>16</height>
              </rect>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="minimum">
              <number>0</number>
             </property>
@@ -1546,6 +1691,11 @@ QProgressBar::chunk
               <height>16</height>
              </rect>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Depth</string>
             </property>
@@ -1559,6 +1709,11 @@ QProgressBar::chunk
               <height>16</height>
              </rect>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Blend threshold</string>
             </property>
@@ -1571,6 +1726,11 @@ QProgressBar::chunk
               <width>131</width>
               <height>16</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
             </property>
             <property name="minimum">
              <number>0</number>
@@ -1599,6 +1759,11 @@ QProgressBar::chunk
               <width>251</width>
               <height>19</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
             </property>
             <property name="text">
              <string>Influence region control</string>
@@ -1634,6 +1799,11 @@ QProgressBar::chunk
               <height>24</height>
              </rect>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Erase</string>
             </property>
@@ -1646,6 +1816,11 @@ QProgressBar::chunk
               <width>110</width>
               <height>24</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
             </property>
             <property name="text">
              <string>Amplitude</string>
@@ -1660,6 +1835,11 @@ QProgressBar::chunk
               <height>24</height>
              </rect>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Warp</string>
             </property>
@@ -1672,6 +1852,11 @@ QProgressBar::chunk
               <width>110</width>
               <height>24</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
             </property>
             <property name="text">
              <string>Move</string>
@@ -1686,6 +1871,11 @@ QProgressBar::chunk
               <height>24</height>
              </rect>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
             <property name="text">
              <string>Amplitude LR</string>
             </property>
@@ -1698,6 +1888,11 @@ QProgressBar::chunk
               <width>110</width>
               <height>24</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
             </property>
             <property name="text">
              <string>Amplitude HR</string>
@@ -1712,6 +1907,11 @@ QProgressBar::chunk
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+          </font>
+         </property>
          <property name="text">
           <string>Save logs</string>
          </property>
@@ -1724,7 +1924,13 @@ QProgressBar::chunk
      </widget>
     </item>
     <item>
-     <widget class="QOpenGLWidget" name="raytracingwidget"/>
+     <widget class="QOpenGLWidget" name="raytracingwidget">
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+       </font>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -1799,25 +2005,50 @@ QProgressBar::chunk
    <property name="text">
     <string>128x128</string>
    </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+    </font>
+   </property>
   </action>
   <action name="action256x256">
    <property name="text">
     <string>256x256</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+    </font>
    </property>
   </action>
   <action name="action512x512">
    <property name="text">
     <string>512x512</string>
    </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+    </font>
+   </property>
   </action>
   <action name="action1024x1024">
    <property name="text">
     <string>1024x1024</string>
    </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+    </font>
+   </property>
   </action>
   <action name="action2048x2048">
    <property name="text">
     <string>2048x2048</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+    </font>
    </property>
   </action>
  </widget>
