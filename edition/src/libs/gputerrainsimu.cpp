@@ -65,7 +65,7 @@ void GPUHydraulicErosionGrid::Init(const HeightField& hf)
 		bedrock[i] = (hf.at(i) - h_min) / (h_max - h_min) * scale ;
 
 	// Prepare shader
-	QString fullPath = QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/heightfield_hydraulic.glsl");
+	QString fullPath = QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/libs/heightfield_hydraulic.glsl");
 	QByteArray ba = fullPath.toLocal8Bit();
 	simulationShader.Initialize(ba.data());
 

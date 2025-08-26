@@ -1,5 +1,7 @@
-#include <QtCore/qfile.h>
 #include "Kernels.h"
+
+#include <QtCore/qfile.h>
+
 #include "npy.hpp"
 
 #include "Kernels/GaussianKernel.h"

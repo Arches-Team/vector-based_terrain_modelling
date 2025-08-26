@@ -1,5 +1,4 @@
-#ifndef __Qte__
-#define __Qte__
+#pragma once
 
 #include "libs/heightfield.h"
 #include "libs/maya.h"
@@ -62,6 +61,3 @@ public slots:
 
   void setRenderResolution(int resolution);
 };
-
-#endif
-

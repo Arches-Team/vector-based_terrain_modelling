@@ -56,9 +56,7 @@ private:
 	// Spring stiffness
 	double m_k{1.};
 
-	GLuint m_differenceComputeShader;
 	GLBuffer m_hfBuffer;
-	GLBuffer m_differenceBuffer;
 
 	bool m_influenceEnabled{ false };
 	double m_influenceRadius{ 0.2 };

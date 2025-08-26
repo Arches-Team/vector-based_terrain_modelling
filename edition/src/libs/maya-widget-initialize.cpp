@@ -163,7 +163,7 @@ void MayaWidget::InitProgram()
   QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
   if (pPath.isEmpty()) std::cout << "MayaWidget::initProgram() : SOLUTION_DIR not defined" << std::endl;
 
-  gpuparam.shader_program = new MayaShader(pPath + QString("/shaders/default"));
+  gpuparam.shader_program = new MayaShader(pPath + QString("/shaders/libs/default"));
 
   // Bind uniform texture
   GLuint loc_tex1 = glGetUniformLocation(gpuparam.shader_program->GetProgram(), "tex1");
@@ -280,7 +280,7 @@ void MayaWidget::InitProgram()
   gpuparam.uniforms.TriPlanarIndex = glGetSubroutineIndex(gpuparam.shader_program->GetProgram(), GL_FRAGMENT_SHADER, "EricTriPlanar");
 
   // Create the program to draw the background
-  gpubackground = new MayaShader(pPath + QString("/shaders/background"));
+  gpubackground = new MayaShader(pPath + QString("/shaders/libs/background"));
 
   // Create the VAO used when drawing the background
   glGenVertexArrays(1, &backgroundVAO);

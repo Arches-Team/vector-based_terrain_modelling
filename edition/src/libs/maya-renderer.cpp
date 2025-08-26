@@ -6,7 +6,7 @@
 /*!
 \brief Build a simple renderer.
 */
-MayaSimpleRenderer::MayaSimpleRenderer() :lineType(lineType), color(color), program(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/simple"))// Load the program for the simple renderer
+MayaSimpleRenderer::MayaSimpleRenderer() :lineType(lineType), color(color), program(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/libs/simple"))// Load the program for the simple renderer
 {
   QVector<Vector> lines;
   lines.append(Vector(0., 0., 0.));
@@ -47,7 +47,7 @@ MayaSimpleRenderer::MayaSimpleRenderer() :lineType(lineType), color(color), prog
 \param color Color of the lines.
 \param lineType Type of line to draw.
 */
-MayaSimpleRenderer::MayaSimpleRenderer(const QVector<Vector>& lines, const Color& color, GLenum lineType) : lineType(lineType), color(color), program(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/simple")) // Load the program for the simple renderer
+MayaSimpleRenderer::MayaSimpleRenderer(const QVector<Vector>& lines, const Color& color, GLenum lineType) : lineType(lineType), color(color), program(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/libs/simple")) // Load the program for the simple renderer
 {
   initSizeLines = lines.size();
   currentSizeLines = lines.size();
@@ -83,7 +83,7 @@ MayaSimpleRenderer::MayaSimpleRenderer(const QVector<Vector>& lines, const Color
 \param color Color of the lines.
 \param lineType Type of line to draw.
 */
-MayaSimpleRenderer::MayaSimpleRenderer(Vector* lines, int n, const Color& color, GLenum lineType) : lineType(lineType), color(color), program(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/simple"))// Load the program for the simple renderer
+MayaSimpleRenderer::MayaSimpleRenderer(Vector* lines, int n, const Color& color, GLenum lineType) : lineType(lineType), color(color), program(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/libs/simple"))// Load the program for the simple renderer
 {
   initSizeLines = n;
   currentSizeLines = n;
@@ -118,7 +118,7 @@ MayaSimpleRenderer::MayaSimpleRenderer(Vector* lines, int n, const Color& color,
 \param color Color of the lines.
 \param lineType Type of line to draw.
 */
-MayaSimpleRenderer::MayaSimpleRenderer(Segment* lines, int n, const Color& color, GLenum lineType) : lineType(lineType), color(color), program(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/simple"))// Load the program for the simple renderer
+MayaSimpleRenderer::MayaSimpleRenderer(Segment* lines, int n, const Color& color, GLenum lineType) : lineType(lineType), color(color), program(QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/libs/simple"))// Load the program for the simple renderer
 {
   initSizeLines = 2 * n;
   currentSizeLines = 2 * n;

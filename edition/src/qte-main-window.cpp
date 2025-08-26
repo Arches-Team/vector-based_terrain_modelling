@@ -1,15 +1,17 @@
-
 #include "qte.h"
+
+#include <direct.h>
+#include <QtWidgets/qmessagebox.h>
 #include <QtWidgets/QFileDialog>
+
+#include "Eigen/Dense"
 #include "libs/heightfieldshader.h"
+
 #include "graph.h"
 #include "Tools/ToolEdit.h"
-#include "Eigen/Dense"
-#include <math.h>
-#include <tuple>
-#include <Kernels/GaussianKernel.h>
-#include <QtWidgets/qmessagebox.h>
-#include <direct.h>
+
+
+
 
 /*!
 \class QteWindow qte.h

@@ -11,18 +11,8 @@ ToolGraph::ToolGraph(GaussianTerrainRaytracingWidget* parent, Kernels& kernels) 
 {
 	initGraph();
 	m_hfBuffer.Generate();
-	m_differenceBuffer.Generate();
 	m_hfBuffer.SetData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * m_parent->getHF()->VertexSize(), nullptr,
 	                   GL_STREAM_READ);
-	m_differenceBuffer.SetData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * m_parent->getHF()->VertexSize(), nullptr,
-	                           GL_STREAM_READ);
-
-	const QString fullPath = QString::fromStdString(
-		std::string(SOLUTION_DIR) + "/shaders/gaussians_holes_detection.glsl");
-	std::cout << fullPath.toStdString() << std::endl;
-	QByteArray ba = fullPath.toLocal8Bit();
-	m_differenceComputeShader = read_program(ba.data());
-
 }
 
 void ToolGraph::associateKernelsToEdges()

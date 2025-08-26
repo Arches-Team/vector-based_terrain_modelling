@@ -1,5 +1,4 @@
 #pragma once
-#include <tuple>
 
 #include "Kernel.h"
 #include "GaussianKernel.h"

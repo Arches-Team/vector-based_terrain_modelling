@@ -1,4 +1,3 @@
-#pragma once
 #include "utils.h"
 
 Vector2 utils::toVec2(QPointF p)

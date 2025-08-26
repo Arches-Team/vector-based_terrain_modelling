@@ -1,10 +1,11 @@
+#include "Kernels/Kernel.h"
+
 #include <math.h>
 #include <tuple>
 
 #include "libs/smooth.h"
 #include "Eigen/Dense"
 
-#include "Kernels/Kernel.h"
 
 double Kernel::distCenter(const Vector2& p) const
 {

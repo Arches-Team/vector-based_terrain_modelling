@@ -1,21 +1,22 @@
 #include "GaussianTerrainRaytracingWidget.h"
+
 #include <QtCore/qfile.h>
 #include <QtGui/QMouseEvent>
 #include <QtGui/qpainter.h>
+#include <QtWidgets/qfiledialog.h>
 #include <direct.h>
+#include <QtWidgets/qmessagebox.h>
 
 #include "libs/scalarfield.h"
 #include "libs/mayageometry.h"
 #include "libs/noise.h"
+
 #include "Tools/ToolEdit.h"
 #include "Tools/ToolBrush.h"
-#include <QtWidgets/qfiledialog.h>
-
 
 #include "Tools/ToolGraph.h"
 #include <Kernels/DetailsKernel.h>
 #include <Kernels/GaussianKernel.h>
-#include <QtWidgets/qmessagebox.h>
 
 
 GaussianTerrainRaytracingWidget::GaussianTerrainRaytracingWidget(): m_accelerationGridShader(), m_rasterizerShader()

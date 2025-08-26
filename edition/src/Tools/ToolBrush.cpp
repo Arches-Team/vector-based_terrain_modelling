@@ -1,7 +1,8 @@
 #include "Tools/ToolBrush.h"
 
-#include "GaussianTerrainRaytracingWidget.h"
 #include "libs/heightfield.h"
+
+#include "GaussianTerrainRaytracingWidget.h"
 #include "utils.h"
 #include "Kernels/GaussianKernel.h"
 #include "Kernels/FactoryKernel.h"
