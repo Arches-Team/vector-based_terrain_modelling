@@ -1,0 +1,22 @@
+optim.image_file_name: "data/ecrins.png"
+optim.num_epochs: 11
+optim.image_size: 128
+
+optim.densification_interval: 20
+optim.densify_before: 0.5
+optim.learning_rate: 0.01
+optim.gradient_threshold: 0.01
+optim.max_ratio_threshold: 20.
+optim.amplitude_threshold: 0.001
+optim.image_gaussian_blur: 0
+
+optim.early_stopping_epoch_not_improve: 20
+optim.early_stopping_patience: 50
+
+log.display_interval: 50
+log.results_folder: ./results/test
+log.save_gaussians_at_display: True
+
+multiscale.resolutions: [16, 64, 128, 256, 1024]
+multiscale.samples_per_res: [50, 100, 200, 500, 1000]
+multiscale.mod_scale_per_res: [0.06, 0.04, 0.03, 0.02, 0.01]
