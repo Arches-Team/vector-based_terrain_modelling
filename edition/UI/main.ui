@@ -1052,87 +1052,15 @@ QProgressBar::chunk
           <string>Input / Output</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="2" column="1">
-           <widget class="QPushButton" name="btn_addDetails">
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-             </font>
-            </property>
-            <property name="text">
-             <string>Add Primitives Details</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="btn_loadShader">
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-             </font>
-            </property>
-            <property name="text">
-             <string>Reload shader</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="openGaussianFile">
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-             </font>
-            </property>
-            <property name="text">
-             <string>Load Primitives</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1">
-           <widget class="QPushButton" name="btn_saveGaussian">
+           <widget class="QPushButton" name="btn_savePrimitives">
             <property name="font">
              <font>
               <family>Segoe UI</family>
              </font>
             </property>
             <property name="text">
-             <string>Save Primitives</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QPushButton" name="btn_exporthighres">
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-             </font>
-            </property>
-            <property name="text">
-             <string>Export high-res</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QPushButton" name="btn_openTerrain">
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-             </font>
-            </property>
-            <property name="text">
-             <string>Load Heightfield</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QPushButton" name="btn_clear">
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-             </font>
-            </property>
-            <property name="text">
-             <string>Empty Terrain</string>
+             <string>Save primitives</string>
             </property>
            </widget>
           </item>
@@ -1194,6 +1122,54 @@ QProgressBar::chunk
             </item>
            </widget>
           </item>
+          <item row="4" column="0">
+           <widget class="QPushButton" name="btn_exporthighres">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Export high-res</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="btn_addDetails">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Add primitives details</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="btn_clear">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Empty terrain</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="openPrimitivesFile">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Load primitives</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -1226,7 +1202,7 @@ QProgressBar::chunk
            <string>Show influence of the primitives</string>
           </property>
          </widget>
-         <widget class="QSlider" name="slider_nbgaussians">
+         <widget class="QSlider" name="slider_nbprimitives">
           <property name="geometry">
            <rect>
             <x>10</x>
@@ -1259,7 +1235,7 @@ QProgressBar::chunk
            <number>0</number>
           </property>
          </widget>
-         <widget class="QLabel" name="label_nbgaussians">
+         <widget class="QLabel" name="label_nbprimitives">
           <property name="geometry">
            <rect>
             <x>170</x>
@@ -1903,21 +1879,54 @@ QProgressBar::chunk
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="check_saveLogs">
-         <property name="enabled">
-          <bool>true</bool>
+        <widget class="QGroupBox" name="gridGroupBox">
+         <property name="title">
+          <string>Miscellaneous</string>
          </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-          </font>
-         </property>
-         <property name="text">
-          <string>Save logs</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
+         <layout class="QGridLayout" name="miscellaneous">
+          <item row="1" column="1">
+           <widget class="QPushButton" name="btn_loadShader">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Reload shader</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="btn_openTerrain">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Load Heightfield</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="check_saveLogs">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Save logs</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>

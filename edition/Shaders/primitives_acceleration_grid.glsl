@@ -2,9 +2,9 @@
 
 #ifdef COMPUTE_SHADER
 
-layout(binding = 0, std430) coherent buffer GaussiansBuffer
+layout(binding = 0, std430) coherent buffer PrimitivesBuffer
 {
-	float gaussians[];
+	float primitives[];
 };
 
 layout(std430, binding = 1) coherent buffer GridCellBuffer {
@@ -17,7 +17,7 @@ layout(std430, binding = 2) coherent buffer GridMappingBuffer {
 
 uniform ivec2 gridResolution;
 uniform int maxPerCell;
-uniform int gaussianOffset;
+uniform int primitivesOffset;
 
 struct bound2
 {
@@ -44,14 +44,14 @@ layout(local_size_x = 64) in;
 void main() {
     uint i = gl_GlobalInvocationID.x;
 
-    int id = int(gaussians[i*gaussianOffset+0]);
+    int id = int(primitives[i*primitivesOffset+0]);
 
-    float theta = gaussians[i*gaussianOffset+3];
+    float theta = primitives[i*primitivesOffset+3];
     
-    float sigma_x = gaussians[i * gaussianOffset + 1];
-    float sigma_y = gaussians[i * gaussianOffset + 2];
+    float sigma_x = primitives[i * primitivesOffset + 1];
+    float sigma_y = primitives[i * primitivesOffset + 2];
 
-    vec2 c = vec2((gaussians[i*gaussianOffset+6]+1.)/2., (gaussians[i*gaussianOffset+5]+1.)/2.);
+    vec2 c = vec2((primitives[i*primitivesOffset+6]+1.)/2., (primitives[i*primitivesOffset+5]+1.)/2.);
 
     mat2 rot = mat2(cos(theta),sin(theta),-sin(theta),cos(theta));
 

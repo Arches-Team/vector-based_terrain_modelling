@@ -7,7 +7,7 @@
 #include "Kernels/GaussianKernel.h"
 #include "Kernels/FactoryKernel.h"
 
-void ToolBrush::moveGaussians(const Vector2& dest)
+void ToolBrush::movePrimitives(const Vector2& dest)
 {
 	const auto offset = utils::toVec2(QPointF(dest[0], dest[1]) - m_oldPos);
 	m_lasso.Translate(offset);
@@ -130,7 +130,7 @@ void ToolBrush::loadBrush(const QString& filename)
 	QString data = file.readAll();
 	auto lines = data.split('\n');
 
-	auto gaussiansStr = lines[0].split(',');
+	auto primitivesStr = lines[0].split(',');
 	auto lassoStr = lines[1].split(',');
 
 	file.close();
@@ -142,9 +142,9 @@ void ToolBrush::loadBrush(const QString& filename)
 	int id = -1;
 	std::vector<float> params;
 
-	for (const auto& gStr : gaussiansStr)
+	for (const auto& pStr : primitivesStr)
 	{
-		float current = std::stof(gStr.toStdString());
+		float current = std::stof(pStr.toStdString());
 		if (i == 0)
 			id = static_cast<int>(current);
 		else
@@ -248,7 +248,7 @@ void ToolBrush::mouseMoveEvent(QMouseEvent* e)
 				m_lasso.Append(utils::toVec2(intersectionNormalized));
 
 			if (m_state == State::MOVE && m_canMove)
-				moveGaussians(Vector2(intersectionNormalized.x(), intersectionNormalized.y()));
+				movePrimitives(Vector2(intersectionNormalized.x(), intersectionNormalized.y()));
 
 			updateRenderer();
 

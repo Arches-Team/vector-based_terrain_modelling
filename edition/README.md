@@ -16,10 +16,11 @@ cmake --build build --config "Release"
 ```
 
 Since this project uses Qt, you must ensure that the required Qt dynamic libraries are available in the output directory.
-On Windows, use `windeployqt` (bundled with Qt) to automatically copy the necessary DLLs and plugins:
+On Windows, use `windeployqt` (bundled with Qt) to automatically copy the necessary DLLs:
 ```
 {QT_PATH}\{version}\{compiler}\bin\windeployqt.exe build\Release\VectorTerrains.exe
 ```
 
 ## Usage
 
+_Coming soon..._

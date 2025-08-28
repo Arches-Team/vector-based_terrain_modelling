@@ -22,7 +22,7 @@ private:
 
 	std::vector<Kernel*> m_selectedKernels;
 
-	void moveGaussians(const Vector2& dest);
+	void movePrimitives(const Vector2& dest);
 	void addToSelection();
 
 	void updateRenderer();

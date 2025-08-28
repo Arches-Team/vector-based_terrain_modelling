@@ -6,7 +6,7 @@
 
 
 /*
- * Erase the gaussians that are in the circle of radius m_radius around the intersection point
+ * Erase primitives that are in the circle of radius m_radius around the intersection point
  */
 void ToolEdit::mouseMoveEvent(QMouseEvent* e)
 {
@@ -29,7 +29,7 @@ void ToolEdit::mouseMoveEvent(QMouseEvent* e)
 				switch (m_mode)
 				{
 				case Mode::ERASE:
-					eraseGaussian(m_intersectionPoint, boxSize);
+					erasePrimitives(m_intersectionPoint, boxSize);
 					defineRenderer(m_parent->getHF(), m_intersectionPoint);
 					break;
 				case Mode::AMPLITUDE:
@@ -90,7 +90,7 @@ void ToolEdit::mousePressEvent(QMouseEvent* e)
 				{
 					if (kernel->distCenter(p) < radius)
 					{
-						m_selectedGaussians.emplace_back(kernel.get());
+						m_selectedPrimitives.emplace_back(kernel.get());
 					}
 				}
 
@@ -101,7 +101,7 @@ void ToolEdit::mousePressEvent(QMouseEvent* e)
 
 		m_canEdit = true;
 
-		// Remove the gaussians
+		// Remove the primitives
 		mouseMoveEvent(e);
 	}
 }
@@ -120,15 +120,15 @@ void ToolEdit::mouseReleaseEvent(QMouseEvent* e)
 			mode = "edit_erase";
 			break;
 		case Mode::AMPLITUDE:
-			m_selectedGaussians.clear();
+			m_selectedPrimitives.clear();
 			mode = "edit_amplitude";
 			break;
 		case Mode::WARP:
-			m_selectedGaussians.clear();
+			m_selectedPrimitives.clear();
 			mode = "edit_warp";
 			break;
 		case Mode::MOVE:
-			m_selectedGaussians.clear();
+			m_selectedPrimitives.clear();
 			mode = "edit_move";
 			break;
 		default:;
@@ -141,7 +141,7 @@ void ToolEdit::mouseReleaseEvent(QMouseEvent* e)
 }
 
 /*!
-\brief Delete the gaussians that are in the circle of radius m_radius around the intersection point
+\brief Delete the primitives that are in the circle of radius m_radius around the intersection point
  */
 void ToolEdit::mouseWheelEvent(QWheelEvent* e)
 {
@@ -160,9 +160,9 @@ void ToolEdit::mouseWheelEvent(QWheelEvent* e)
 }
 
 /*!
-\brief Erase the gaussians that are in the circle of radius m_radius around the intersection point
+\brief Erase the primitives that are in the circle of radius m_radius around the intersection point
 */
-void ToolEdit::eraseGaussian(const Vector& intersectionPoint, const Vector2& boxSize) const
+void ToolEdit::erasePrimitives(const Vector& intersectionPoint, const Vector2& boxSize) const
 {
 	const double radius = 2. * m_radius / boxSize[0];
 
@@ -189,7 +189,7 @@ void ToolEdit::changeAmplitude(const Vector2& mouseScreenPos, double size_min, d
 	                                            m_clickedIntersectionPoint[1] / boxSize[1]);
 	const double radius = 2. * m_radius / boxSize[0];
 
-	for (Kernel* k : m_selectedGaussians)
+	for (Kernel* k : m_selectedPrimitives)
 	{
 		double size = fabs(0.5 * (k->scaleX() + k->scaleY()));
 		if (size > size_min && size < size_max) {
@@ -213,7 +213,7 @@ void ToolEdit::warp(const Vector2& mouseScreenPos)
 		m_clickedIntersectionPoint[1] / boxSize[1]);
 	const double radius = 2. * m_radius / boxSize[0];
 
-	for (auto& k : m_selectedGaussians)
+	for (auto& k : m_selectedPrimitives)
 	{
 		Vector2 point(k->posX(), k->posY());
 		const double dist = k->distCenter(p);
@@ -247,7 +247,7 @@ void ToolEdit::move(const Vector2& intersection)
 		m_clickedIntersectionPoint[1] / boxSize[1]);
 	const double radius = 2. * m_radius / boxSize[0];
 
-	for (const auto k : m_selectedGaussians)
+	for (const auto k : m_selectedPrimitives)
 	{
 		const auto dist = Norm(p - k->pos()) / radius;
 		const auto falloff = 1 - dist;

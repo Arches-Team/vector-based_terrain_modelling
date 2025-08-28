@@ -88,14 +88,14 @@ void VectorTerrainRaytracingWidget::setNbPrimitives(int val)
 	glUniform1i(32, val);
 
 	glUseProgram(m_rasterizerShader);
-	glUniform1i(glGetUniformLocation(m_rasterizerShader, "showNbGaussians"), val);
+	glUniform1i(glGetUniformLocation(m_rasterizerShader, "showNbPrimitives"), val);
 	glUseProgram(0);
 
 	updateInfluenceRenderers();
 	computeAccelerationGrid();
 	rasterizePrimitives();
 
-	recordHF("showNbGaussians");
+	recordHF("showNbPrimitives");
 }
 
 void VectorTerrainRaytracingWidget::showInfluence(const bool& show)
@@ -234,7 +234,7 @@ void VectorTerrainRaytracingWidget::initHF(int size)
 {
 	if (hf == nullptr)
 	{
-		// Create a dummy scalar field with hard coded constant to render gaussians
+		// Create a dummy scalar field with hard coded constant to render primitives
 		hf = new ScalarField2(Box2(1250.0), size, size, 0.);
 		(*hf)[1] = 800;
 		UpdateInternal();
@@ -577,7 +577,7 @@ void VectorTerrainRaytracingWidget::computeAccelerationGrid()
 
 		glUniform2i(glGetUniformLocation(m_accelerationGridShader, "gridResolution"), m_gridSize, m_gridSize);
 		glUniform1i(glGetUniformLocation(m_accelerationGridShader, "maxPerCell"), m_maxPerCell);
-		glUniform1i(glGetUniformLocation(m_accelerationGridShader, "gaussianOffset"), utils::sizeKernel());
+		glUniform1i(glGetUniformLocation(m_accelerationGridShader, "primitivesOffset"), utils::sizeKernel());
 		m_ssbo_primitives.BindAt(GL_SHADER_STORAGE_BUFFER, 0);
 		m_gridCellCountsBuffer.BindAt(GL_SHADER_STORAGE_BUFFER, 1);
 		m_gridCellMappingsBuffer.BindAt(GL_SHADER_STORAGE_BUFFER, 2);
@@ -613,8 +613,8 @@ void VectorTerrainRaytracingWidget::rasterizePrimitives()
 		glUniform2i(glGetUniformLocation(m_rasterizerShader, "nxy"), hf->GetSizeX(), hf->GetSizeY());
 		glUniform2f(glGetUniformLocation(m_rasterizerShader, "zRange"), zmin, zmax);
 		glUniform1f(glGetUniformLocation(m_rasterizerShader, "noiseLevel"), m_noiseLevel);
-		glUniform1i(glGetUniformLocation(m_rasterizerShader, "gaussianOffset"), utils::sizeKernel());
-		glUniform1i(glGetUniformLocation(m_rasterizerShader, "showNbGaussians"), m_nbPrimitivesToShow);
+		glUniform1i(glGetUniformLocation(m_rasterizerShader, "primitiveOffset"), utils::sizeKernel());
+		glUniform1i(glGetUniformLocation(m_rasterizerShader, "showNbPrimitives"), m_nbPrimitivesToShow);
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "gaussianID"), static_cast<int>(KernelType::GAUSSIAN));
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "detailsID"), static_cast<int>(KernelType::DETAILS));
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "detailsSize"), m_details.GetSizeX());

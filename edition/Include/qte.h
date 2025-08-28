@@ -11,27 +11,27 @@ class QteWindow : public QMainWindow
   Q_OBJECT
 
 private:
-  Ui::Assets uiw; //!< Interface : QtDesigner.
-  std::unique_ptr<VectorTerrainRaytracingWidget> raywidget;
+  Ui::Assets m_uiw; //!< Interface : QtDesigner.
+  std::unique_ptr<VectorTerrainRaytracingWidget> m_raywidget;
   HeightField m_hf;
 
   std::map<QString, QString> m_templateBrushes;
 
 public:
   QteWindow();
-  void DisplayHeightfield(bool setCamera = false);
+  void displayHeightfield(bool setCamera = false);
 
 private:
   void createActions();
   void enableAllTools();
 
 public slots:
-  void OpenHeightfield();
-  void OpenGaussianFile();
-  void SaveGaussianFile();
+  void openHeightfield();
+  void openPrimitivesFile();
+  void savePrimitivesFile();
   void reloadShader();
-  void OpenGroundTruth();
-  void ExportHighRes();
+  void openGroundTruth();
+  void exportHighRes();
 
   void dragEnterEvent(QDragEnterEvent*) override;
   void dropEvent(QDropEvent*) override;

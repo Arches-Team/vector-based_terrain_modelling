@@ -27,7 +27,7 @@ private:
 	Mode m_mode{Mode::ERASE};
 
 	Vector2 m_oldMouseScreenPos;
-	std::vector<Kernel*> m_selectedGaussians;
+	std::vector<Kernel*> m_selectedPrimitives;
 
 public:
 	ToolEdit(VectorTerrainRaytracingWidget* parent, Kernels& kernels): Tool(parent, kernels)
@@ -39,7 +39,7 @@ public:
 	void mouseReleaseEvent(QMouseEvent* e) override;
 	void mouseWheelEvent(QWheelEvent* e) override;
 
-	void eraseGaussian(const Vector& intersectionPoint, const Vector2& boxSize) const;
+	void erasePrimitives(const Vector& intersectionPoint, const Vector2& boxSize) const;
 	void changeAmplitude(const Vector2& mouseScreenPos, double size_min = 0., double size_max = 1.0);
 	void warp(const Vector2& mouseScreenPos);
 	void move(const Vector2& intersection);

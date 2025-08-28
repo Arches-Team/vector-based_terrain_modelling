@@ -21,7 +21,7 @@ void Kernels::loadCSVFile(const QString& filename)
 	QString data = file.readAll();
 	auto lines = data.split('\n');
 
-	auto gaussiansStr = lines[0].split(',');
+	auto primitivesStr = lines[0].split(',');
 
 	file.close();
 
@@ -31,9 +31,9 @@ void Kernels::loadCSVFile(const QString& filename)
 	int i = 0;
 	std::vector<float> kernel;
 	int id = -1;
-	for (const auto& gStr : gaussiansStr)
+	for (const auto& pStr : primitivesStr)
 	{
-		float cell = std::stof(gStr.toStdString());
+		float cell = std::stof(pStr.toStdString());
 		if (i == 0)
 			id = static_cast<int>(cell);
 		else

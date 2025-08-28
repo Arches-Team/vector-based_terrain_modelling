@@ -24,23 +24,23 @@
 QteWindow::QteWindow()
 {
     // Loading interface
-    uiw.setupUi(this);
+    m_uiw.setupUi(this);
 
-    uiw.btn_handTool->setEnabled(false);
-    uiw.toolOptionsWidget->setCurrentIndex(0);
+    m_uiw.btn_handTool->setEnabled(false);
+    m_uiw.toolOptionsWidget->setCurrentIndex(0);
 
     // Ray tracing widget
     {
         const Camera camera(Vector(-10.0, -10.0, 10.0));
-        raywidget = std::make_unique<VectorTerrainRaytracingWidget>();
+        m_raywidget = std::make_unique<VectorTerrainRaytracingWidget>();
         auto* GLlayout = new QGridLayout;
-        GLlayout->addWidget(raywidget.get(), 0, 0);
+        GLlayout->addWidget(m_raywidget.get(), 0, 0);
         GLlayout->setContentsMargins(0, 0, 0, 0);
-        uiw.raytracingwidget->setLayout(GLlayout);
-        raywidget->SetCamera(camera);
+        m_uiw.raytracingwidget->setLayout(GLlayout);
+        m_raywidget->SetCamera(camera);
     }
 
-    uiw.slider_nbgaussians->setMaximum(raywidget->getNbPrimitives());
+    m_uiw.slider_nbprimitives->setMaximum(m_raywidget->getNbPrimitives());
 
     createActions();
     setAcceptDrops(true);
@@ -56,19 +56,19 @@ void QteWindow::dragEnterEvent(QDragEnterEvent* e)
     }
 }
 
-void QteWindow::DisplayHeightfield(bool setCamera)
+void QteWindow::displayHeightfield(bool setCamera)
 {
     MayaGeometry mg("Heightfield", m_hf.CreateMesh());
     HeightFieldShader shader(m_hf);
     auto texture = shader.ShadedRelief();
 
-    raywidget->SetHeightField(&m_hf);
-    raywidget->UseElevationShading(true);
+    m_raywidget->SetHeightField(&m_hf);
+    m_raywidget->UseElevationShading(true);
 
     if (setCamera)
     {
         auto cam = Camera::View(mg.GetBox());
-        raywidget->SetCamera(cam);
+        m_raywidget->SetCamera(cam);
     }
 }
 
@@ -84,85 +84,85 @@ void QteWindow::dropEvent(QDropEvent* e)
 
 void QteWindow::updateRayStep(const int val)
 {
-    raywidget->SetSteps(val);
+    m_raywidget->SetSteps(val);
 }
 
 void QteWindow::updateRayEps(const int val)
 {
-    raywidget->SetEpsilon(static_cast<float>(val) / 1000.f);
+    m_raywidget->SetEpsilon(static_cast<float>(val) / 1000.f);
 }
 
 void QteWindow::updateNbPrimitives(const int val)
 {
-    raywidget->setNbPrimitives(val);
-    uiw.label_nbgaussians->setText(QString("%1 primitives").arg(val));
+    m_raywidget->setNbPrimitives(val);
+    m_uiw.label_nbprimitives->setText(QString("%1 primitives").arg(val));
 }
 
 void QteWindow::setMaxPrimitives(const int val)
 {
-    raywidget->setNbPrimitives(val);
-    uiw.label_nbgaussians->setText(QString("%1 primitives").arg(val));
-    uiw.slider_nbgaussians->setRange(1, val);
-    uiw.slider_nbgaussians->setValue(val);
+    m_raywidget->setNbPrimitives(val);
+    m_uiw.label_nbprimitives->setText(QString("%1 primitives").arg(val));
+    m_uiw.slider_nbprimitives->setRange(1, val);
+    m_uiw.slider_nbprimitives->setValue(val);
 }
 
 void QteWindow::updateShowInfluence(const bool show)
 {
-    raywidget->showInfluence(show);
+    m_raywidget->showInfluence(show);
 }
 
 void QteWindow::handTool()
 {
     enableAllTools();
-    raywidget->setTool(ToolType::HAND);
-    uiw.btn_handTool->setEnabled(false);
-    uiw.toolOptionsWidget->setCurrentIndex(0);
+    m_raywidget->setTool(ToolType::HAND);
+    m_uiw.btn_handTool->setEnabled(false);
+    m_uiw.toolOptionsWidget->setCurrentIndex(0);
 }
 
 void QteWindow::moveTool()
 {
     enableAllTools();
-    raywidget->setTool(ToolType::MOVE);
-    uiw.btn_moveTool->setEnabled(false);
-    uiw.toolOptionsWidget->setCurrentIndex(1);
+    m_raywidget->setTool(ToolType::MOVE);
+    m_uiw.btn_moveTool->setEnabled(false);
+    m_uiw.toolOptionsWidget->setCurrentIndex(1);
 }
 
 void QteWindow::eraseTool()
 {
     enableAllTools();
-    raywidget->setTool(ToolType::EDIT);
-    uiw.btn_eraseTool->setEnabled(false);
-    uiw.toolOptionsWidget->setCurrentIndex(3);
-    uiw.radio_erase->setChecked(true);
-    uiw.radio_amplitude->setChecked(false);
+    m_raywidget->setTool(ToolType::EDIT);
+    m_uiw.btn_eraseTool->setEnabled(false);
+    m_uiw.toolOptionsWidget->setCurrentIndex(3);
+    m_uiw.radio_erase->setChecked(true);
+    m_uiw.radio_amplitude->setChecked(false);
 }
 
 void QteWindow::graphTool()
 {
     enableAllTools();
-    raywidget->setTool(ToolType::GRAPH);
-    uiw.btn_graphTool->setEnabled(false);
-    uiw.toolOptionsWidget->setCurrentIndex(2);
+    m_raywidget->setTool(ToolType::GRAPH);
+    m_uiw.btn_graphTool->setEnabled(false);
+    m_uiw.toolOptionsWidget->setCurrentIndex(2);
 }
 
 void QteWindow::applyTool()
 {
-    raywidget->applyTool();
+    m_raywidget->applyTool();
 }
 
 void QteWindow::loadTemplateBrush()
 {
-    auto selectedBrush = uiw.list_brushes->currentItem()->text();
+    auto selectedBrush = m_uiw.list_brushes->currentItem()->text();
     if (selectedBrush.isEmpty())
         return;
 
-    raywidget->openBrush(m_templateBrushes[selectedBrush]);
+    m_raywidget->openBrush(m_templateBrushes[selectedBrush]);
 }
 
 void QteWindow::refreshTemplateBrush()
 {
     m_templateBrushes.clear();
-    uiw.list_brushes->clear();
+    m_uiw.list_brushes->clear();
 
     auto brushFolder = std::string(SOLUTION_DIR) + "/data/brushes/templates/";
 
@@ -178,43 +178,43 @@ void QteWindow::refreshTemplateBrush()
     }
 
     for (const auto& kv : m_templateBrushes)
-        uiw.list_brushes->addItem(kv.first);
+        m_uiw.list_brushes->addItem(kv.first);
 
 }
 
 void QteWindow::setEditErase()
 {
-    raywidget->setEditMode(ToolEdit::Mode::ERASE);
+    m_raywidget->setEditMode(ToolEdit::Mode::ERASE);
 }
 
 void QteWindow::setEditAmplitude()
 {
-    raywidget->setEditMode(ToolEdit::Mode::AMPLITUDE);
+    m_raywidget->setEditMode(ToolEdit::Mode::AMPLITUDE);
 }
 
 void QteWindow::setEditAmplitudeLR()
 {
-    raywidget->setEditMode(ToolEdit::Mode::AMPLITUDELR);
+    m_raywidget->setEditMode(ToolEdit::Mode::AMPLITUDELR);
 }
 
 void QteWindow::setEditAmplitudeHR()
 {
-    raywidget->setEditMode(ToolEdit::Mode::AMPLITUDEHR);
+    m_raywidget->setEditMode(ToolEdit::Mode::AMPLITUDEHR);
 }
 
 void QteWindow::setEditWarp()
 {
-    raywidget->setEditMode(ToolEdit::Mode::WARP);
+    m_raywidget->setEditMode(ToolEdit::Mode::WARP);
 }
 
 void QteWindow::setEditMove()
 {
-    raywidget->setEditMode(ToolEdit::Mode::MOVE);
+    m_raywidget->setEditMode(ToolEdit::Mode::MOVE);
 }
 
 void QteWindow::setRenderResolution(int resolution)
 {
-    raywidget->setRenderResolution(resolution);
+    m_raywidget->setRenderResolution(resolution);
 }
 
 
@@ -224,74 +224,74 @@ void QteWindow::setRenderResolution(int resolution)
 void QteWindow::createActions()
 {
     //File
-    connect(uiw.actionExit, SIGNAL(triggered()), this, SLOT(close()));
+    connect(m_uiw.actionExit, SIGNAL(triggered()), this, SLOT(close()));
 
     // Button connections
-    connect(uiw.openGaussianFile, SIGNAL(clicked()), this, SLOT(OpenGaussianFile()));
-    connect(uiw.btn_saveGaussian, SIGNAL(clicked()), this, SLOT(SaveGaussianFile()));
-    connect(uiw.btn_loadShader, SIGNAL(clicked()), this, SLOT(reloadShader()));
-    connect(uiw.btn_openTerrain, SIGNAL(clicked()), this, SLOT(OpenHeightfield()));
-    connect(uiw.btn_addDetails, SIGNAL(clicked()), this, SLOT(OpenGroundTruth()));
-    connect(uiw.btn_exporthighres, SIGNAL(clicked()), this, SLOT(ExportHighRes()));
-    connect(uiw.btn_clear, SIGNAL(clicked()), raywidget.get(), SLOT(clear()));
+    connect(m_uiw.openPrimitivesFile, SIGNAL(clicked()), this, SLOT(openPrimitivesFile()));
+    connect(m_uiw.btn_savePrimitives, SIGNAL(clicked()), this, SLOT(savePrimitivesFile()));
+    connect(m_uiw.btn_loadShader, SIGNAL(clicked()), this, SLOT(reloadShader()));
+    connect(m_uiw.btn_openTerrain, SIGNAL(clicked()), this, SLOT(openHeightfield()));
+    connect(m_uiw.btn_addDetails, SIGNAL(clicked()), this, SLOT(openGroundTruth()));
+    connect(m_uiw.btn_exporthighres, SIGNAL(clicked()), this, SLOT(exportHighRes()));
+    connect(m_uiw.btn_clear, SIGNAL(clicked()), m_raywidget.get(), SLOT(clear()));
 
     // Tools
-    connect(uiw.btn_handTool, SIGNAL(clicked()), this, SLOT(handTool()));
-    connect(uiw.btn_moveTool, SIGNAL(clicked()), this, SLOT(moveTool()));
-    connect(uiw.btn_eraseTool, SIGNAL(clicked()), this, SLOT(eraseTool()));
-    connect(uiw.btn_graphTool, SIGNAL(clicked()), this, SLOT(graphTool()));
-    connect(uiw.btn_applyTool, SIGNAL(clicked()), this, SLOT(applyTool()));
+    connect(m_uiw.btn_handTool, SIGNAL(clicked()), this, SLOT(handTool()));
+    connect(m_uiw.btn_moveTool, SIGNAL(clicked()), this, SLOT(moveTool()));
+    connect(m_uiw.btn_eraseTool, SIGNAL(clicked()), this, SLOT(eraseTool()));
+    connect(m_uiw.btn_graphTool, SIGNAL(clicked()), this, SLOT(graphTool()));
+    connect(m_uiw.btn_applyTool, SIGNAL(clicked()), this, SLOT(applyTool()));
 
-    connect(raywidget.get(), SIGNAL(nbPrimitivesChanged(int)), this, SLOT(setMaxPrimitives(int)));
+    connect(m_raywidget.get(), SIGNAL(nbPrimitivesChanged(int)), this, SLOT(setMaxPrimitives(int)));
 
-    connect(uiw.slider_nbgaussians, SIGNAL(valueChanged(int)), this, SLOT(updateNbPrimitives(int)));
-    connect(uiw.check_showInfluence, SIGNAL(clicked(bool)), this, SLOT(updateShowInfluence(bool)));
+    connect(m_uiw.slider_nbprimitives, SIGNAL(valueChanged(int)), this, SLOT(updateNbPrimitives(int)));
+    connect(m_uiw.check_showInfluence, SIGNAL(clicked(bool)), this, SLOT(updateShowInfluence(bool)));
 
-    connect(uiw.slider_noiseLevel, SIGNAL(valueChanged(int)), raywidget.get(), SLOT(setNoiseLevel(int)));
-    connect(uiw.slider_amplitude, SIGNAL(valueChanged(int)), raywidget.get(), SLOT(setMaxRange(int)));
+    connect(m_uiw.slider_noiseLevel, SIGNAL(valueChanged(int)), m_raywidget.get(), SLOT(setNoiseLevel(int)));
+    connect(m_uiw.slider_amplitude, SIGNAL(valueChanged(int)), m_raywidget.get(), SLOT(setMaxRange(int)));
 
     // Brush
-    connect(uiw.btn_saveBrush, SIGNAL(clicked()), raywidget.get(), SLOT(saveBrush()));
-    connect(uiw.btn_saveBrush, SIGNAL(clicked()), this, SLOT(refreshTemplateBrush()));
-    connect(uiw.btn_openBrush, SIGNAL(clicked()), raywidget.get(), SLOT(openBrush()));
-    connect(uiw.slider_brushthreshold, SIGNAL(valueChanged(int)), raywidget.get(), SLOT(updateBrushThreshold(int)));
-    connect(uiw.list_brushes, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(loadTemplateBrush()));
+    connect(m_uiw.btn_saveBrush, SIGNAL(clicked()), m_raywidget.get(), SLOT(saveBrush()));
+    connect(m_uiw.btn_saveBrush, SIGNAL(clicked()), this, SLOT(refreshTemplateBrush()));
+    connect(m_uiw.btn_openBrush, SIGNAL(clicked()), m_raywidget.get(), SLOT(openBrush()));
+    connect(m_uiw.slider_brushthreshold, SIGNAL(valueChanged(int)), m_raywidget.get(), SLOT(updateBrushThreshold(int)));
+    connect(m_uiw.list_brushes, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(loadTemplateBrush()));
 
     // Graph
-    connect(uiw.slider_depthGraph, SIGNAL(valueChanged(int)), raywidget.get(), SLOT(updateDepthGraphTool(int)));
-		connect(raywidget.get(), SIGNAL(updateDepthGraph(int)), uiw.slider_depthGraph, SLOT(setValue(int)));
+    connect(m_uiw.slider_depthGraph, SIGNAL(valueChanged(int)), m_raywidget.get(), SLOT(updateDepthGraphTool(int)));
+		connect(m_raywidget.get(), SIGNAL(updateDepthGraph(int)), m_uiw.slider_depthGraph, SLOT(setValue(int)));
 
-    connect(uiw.check_influence, SIGNAL(clicked(bool)), raywidget.get(), SLOT(setInfluenceRegionGraphTool(bool)));
-    connect(uiw.slider_blendThresholdGraph, SIGNAL(valueChanged(int)), raywidget.get(), SLOT(updateBlendGraphTool(int)));
+    connect(m_uiw.check_influence, SIGNAL(clicked(bool)), m_raywidget.get(), SLOT(setInfluenceRegionGraphTool(bool)));
+    connect(m_uiw.slider_blendThresholdGraph, SIGNAL(valueChanged(int)), m_raywidget.get(), SLOT(updateBlendGraphTool(int)));
 
     // Edit
-    connect(uiw.radio_erase, SIGNAL(clicked()), this, SLOT(setEditErase()));
-    connect(uiw.radio_amplitude, SIGNAL(clicked()), this, SLOT(setEditAmplitude()));
-    connect(uiw.radio_amplitude_lr, SIGNAL(clicked()), this, SLOT(setEditAmplitudeLR()));
-    connect(uiw.radio_amplitude_hr, SIGNAL(clicked()), this, SLOT(setEditAmplitudeHR()));
-    connect(uiw.radio_warp, SIGNAL(clicked()), this, SLOT(setEditWarp()));
-    connect(uiw.radio_move, SIGNAL(clicked()), this, SLOT(setEditMove()));
+    connect(m_uiw.radio_erase, SIGNAL(clicked()), this, SLOT(setEditErase()));
+    connect(m_uiw.radio_amplitude, SIGNAL(clicked()), this, SLOT(setEditAmplitude()));
+    connect(m_uiw.radio_amplitude_lr, SIGNAL(clicked()), this, SLOT(setEditAmplitudeLR()));
+    connect(m_uiw.radio_amplitude_hr, SIGNAL(clicked()), this, SLOT(setEditAmplitudeHR()));
+    connect(m_uiw.radio_warp, SIGNAL(clicked()), this, SLOT(setEditWarp()));
+    connect(m_uiw.radio_move, SIGNAL(clicked()), this, SLOT(setEditMove()));
 
     // Debug
-    connect(uiw.check_saveLogs, SIGNAL(clicked(bool)), raywidget.get(), SLOT(setSaveLogs(bool)));
+    connect(m_uiw.check_saveLogs, SIGNAL(clicked(bool)), m_raywidget.get(), SLOT(setSaveLogs(bool)));
 
     // Render resolution
-    connect(uiw.action128x128, &QAction::triggered, this, [this]{setRenderResolution(128); });
-    connect(uiw.action256x256, &QAction::triggered, this, [this]{setRenderResolution(256); });
-    connect(uiw.action512x512, &QAction::triggered, this, [this]{setRenderResolution(512); });
-    connect(uiw.action1024x1024, &QAction::triggered, this, [this]{setRenderResolution(1024); });
-    connect(uiw.action2048x2048, &QAction::triggered, this, [this]{setRenderResolution(2048); });
+    connect(m_uiw.action128x128, &QAction::triggered, this, [this]{setRenderResolution(128); });
+    connect(m_uiw.action256x256, &QAction::triggered, this, [this]{setRenderResolution(256); });
+    connect(m_uiw.action512x512, &QAction::triggered, this, [this]{setRenderResolution(512); });
+    connect(m_uiw.action1024x1024, &QAction::triggered, this, [this]{setRenderResolution(1024); });
+    connect(m_uiw.action2048x2048, &QAction::triggered, this, [this]{setRenderResolution(2048); });
 }
 
 void QteWindow::enableAllTools()
 {
-    uiw.btn_handTool->setEnabled(true);
-    uiw.btn_moveTool->setEnabled(true);
-    uiw.btn_eraseTool->setEnabled(true);
-    uiw.btn_graphTool->setEnabled(true);
+    m_uiw.btn_handTool->setEnabled(true);
+    m_uiw.btn_moveTool->setEnabled(true);
+    m_uiw.btn_eraseTool->setEnabled(true);
+    m_uiw.btn_graphTool->setEnabled(true);
 }
 
-void QteWindow::OpenHeightfield()
+void QteWindow::openHeightfield()
 {
     const QString filename = QFileDialog::getOpenFileName(this, tr("Open Heightfield"), QString(),
                                                           tr("Image files(*.jpg, *.png)"));
@@ -299,42 +299,42 @@ void QteWindow::OpenHeightfield()
     m_hf = ScalarField2(Box2(800.0), QImage(filename));
     m_hf.Scale(Vector(1.0, 1.0, 0.001));
 
-    DisplayHeightfield(true);
+    displayHeightfield(true);
 }
 
-void QteWindow::OpenGaussianFile()
+void QteWindow::openPrimitivesFile()
 {
-    const QString filename = QFileDialog::getOpenFileName(this, tr("Open Gaussian file"),
+    const QString filename = QFileDialog::getOpenFileName(this, tr("Open Primitives file"),
                                                           QString::fromStdString(
                                                               std::string(SOLUTION_DIR) + "/data/"),
-                                                          tr("Gaussians files(*.csv *.npy)"));
+                                                          tr("Primitives files(*.csv *.npy)"));
     const QFileInfo fileInfo{filename};
     const auto ext = fileInfo.suffix();
-    raywidget->loadPrimitivesFile(filename, ext);
+    m_raywidget->loadPrimitivesFile(filename, ext);
 
-    raywidget->UseGreenBrownYellowShading(true);
-    emit raywidget->nbPrimitivesChanged(raywidget->getNbPrimitives());
+    m_raywidget->UseGreenBrownYellowShading(true);
+    emit m_raywidget->nbPrimitivesChanged(m_raywidget->getNbPrimitives());
 
-    raywidget->recordHF("hf");
+    m_raywidget->recordHF("hf");
 }
 
-void QteWindow::SaveGaussianFile()
+void QteWindow::savePrimitivesFile()
 {
-    const QString filename = QFileDialog::getSaveFileName(this, tr("Save Gaussian CSV file"),
+    const QString filename = QFileDialog::getSaveFileName(this, tr("Save Primitives CSV file"),
         QString::fromStdString(
             std::string(SOLUTION_DIR) + "/data/"),
-        tr("Gaussians files(*.csv)"));
+        tr("Primitives files(*.csv)"));
 
-    raywidget->saveCSVFile(filename);
+    m_raywidget->saveCSVFile(filename);
 }
 
 void QteWindow::reloadShader()
 {
-    raywidget->reloadShaders();
-    updateNbPrimitives(uiw.slider_nbgaussians->value());
+    m_raywidget->reloadShaders();
+    updateNbPrimitives(m_uiw.slider_nbprimitives->value());
 }
 
-void QteWindow::OpenGroundTruth()
+void QteWindow::openGroundTruth()
 {
     const QString filename = QFileDialog::getOpenFileName(this, tr("Open Heightfield"), QString(),
         tr("Image files(*.jpg, *.png)"));
@@ -343,7 +343,7 @@ void QteWindow::OpenGroundTruth()
         return;
 
     QImage image(filename);
-    const int res = raywidget->getRenderResolution();
+    const int res = m_raywidget->getRenderResolution();
 
     if (image.width() != res && image.height() != res)
     {
@@ -372,12 +372,12 @@ void QteWindow::OpenGroundTruth()
     auto gt = ScalarField2(Box2(800.0), image);
     gt.SetRange(0, 1);
 
-    raywidget->addDetailsKernel(gt);
+    m_raywidget->addDetailsKernel(gt);
 }
 
-void QteWindow::ExportHighRes()
+void QteWindow::exportHighRes()
 {
-    int id = uiw.combo_exporthighres->currentIndex();
+    int id = m_uiw.combo_exporthighres->currentIndex();
     int res = std::pow(2, (id + 7));
-    raywidget->exportToRes(res);
+    m_raywidget->exportToRes(res);
 }

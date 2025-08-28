@@ -9,9 +9,9 @@ layout (binding = 0, std430) coherent buffer HeightfieldBuffer
     float hf[];
 };
 
-layout (binding = 1, std430) coherent buffer GaussiansBuffer
+layout (binding = 1, std430) coherent buffer PrimitivesBuffer
 {
-    float gaussians[];
+    float primitives[];
 };
 
 layout (std430, binding = 2) buffer GridCellBuffer {
@@ -32,8 +32,8 @@ uniform int maxPerCell;
 uniform ivec2 nxy;
 uniform vec2 zRange;
 uniform float noiseLevel;
-uniform int gaussianOffset;
-uniform int showNbGaussians;
+uniform int primitiveOffset;
+uniform int showNbPrimitives;
 uniform int gaussianID;
 uniform int detailsID;
 uniform int detailsSize;
@@ -72,14 +72,14 @@ float Height(vec2 p)
     for (int j = 0; j < min(count, maxPerCell); ++j)
     {
         int i = gridCellMappings[cellIndex * maxPerCell + j];
-        if (i >= showNbGaussians) continue;
+        if (i >= showNbPrimitives) continue;
 
-        int id = int(gaussians[i * gaussianOffset + 0]);
-        float sigma_x = gaussians[i * gaussianOffset + 1];
-        float sigma_y = gaussians[i * gaussianOffset + 2];
-        float theta = gaussians[i * gaussianOffset + 3];
-        float amplitude = gaussians[i * gaussianOffset + 4];
-        vec2 mu = vec2(gaussians[i * gaussianOffset + 5], gaussians[i * gaussianOffset + 6]);
+        int id = int(primitives[i * primitiveOffset + 0]);
+        float sigma_x = primitives[i * primitiveOffset + 1];
+        float sigma_y = primitives[i * primitiveOffset + 2];
+        float theta = primitives[i * primitiveOffset + 3];
+        float amplitude = primitives[i * primitiveOffset + 4];
+        vec2 mu = vec2(primitives[i * primitiveOffset + 5], primitives[i * primitiveOffset + 6]);
 
         float x = p.x;
         float y = p.y;
@@ -92,7 +92,7 @@ float Height(vec2 p)
         mat2 R = mat2(cos(theta), -sin(theta),
                     sin(theta), cos(theta));
 
-        // If the gaussian does not influence the current point, do not compute
+        // If the pritimives does not influence the current point, do not compute
         {
             vec2 tmpP = R * vec2(x, y);
 
@@ -119,7 +119,7 @@ float Height(vec2 p)
 
         if(id == gaussianID)
         {
-            float beta = gaussians[i * gaussianOffset + 7];
+            float beta = primitives[i * primitiveOffset + 7];
             float val = exp(-pow(z, beta)) * amplitude;
             ret += val;
         }
@@ -134,10 +134,10 @@ float Height(vec2 p)
             mat2 minusR = mat2(cos(-theta), -sin(-theta),
                                sin(-theta), cos(-theta));
             
-            float origSigmaX = gaussians[i * gaussianOffset + 9];
-            float origSigmaY = gaussians[i * gaussianOffset + 10];
-            float origTheta = gaussians[i * gaussianOffset + 11];
-            float thetaNoDeform = gaussians[i * gaussianOffset + 12];
+            float origSigmaX = primitives[i * primitiveOffset + 9];
+            float origSigmaY = primitives[i * primitiveOffset + 10];
+            float origTheta = primitives[i * primitiveOffset + 11];
+            float thetaNoDeform = primitives[i * primitiveOffset + 12];
 
             mat2 noDeformR = mat2(cos(thetaNoDeform), -sin(thetaNoDeform),
                                sin(thetaNoDeform), cos(thetaNoDeform));
@@ -160,7 +160,7 @@ float Height(vec2 p)
             mat2 inverseS = mat2(1./sx, 0.,
                                  0., 1./sy);
 
-            vec2 t = vec2(gaussians[i * gaussianOffset + 7], gaussians[i * gaussianOffset + 8]);
+            vec2 t = vec2(primitives[i * primitiveOffset + 7], primitives[i * primitiveOffset + 8]);
             //[ -1, 1]
             t = (t * 2.) - 1.;
 
