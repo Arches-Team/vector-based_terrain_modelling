@@ -27,6 +27,7 @@ public:
 
 	void loadCSVFile(const QString& filename);
 	void loadNPYFile(const QString& filename);
+	void saveCSVFile(const QString& filename);
 	int size() { return static_cast<int>(m_kernels.size()); }
 
 	std::vector<float> getArray();
@@ -51,7 +52,7 @@ public:
 	void removeIf(const std::function<bool(const std::unique_ptr<Kernel>&)>& predicate);
 	bool empty() const { return m_kernels.empty(); }
 
-	// Bad to expose parameters... But faster to code. TODO
+	// Probably not the best idea to expose private parameters.
 	std::vector<std::unique_ptr<Kernel>>& getKernels() { return m_kernels; }
 
 	Kernel& operator[](int i);

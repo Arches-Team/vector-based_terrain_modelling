@@ -22,7 +22,7 @@ if (NOT GLEW_FOUND)
 endif ()
 
 set(SOURCE_FILES
-        src/GaussianTerrainRaytracingWidget.cpp
+        src/VectorTerrainRaytracingWidget.cpp
         src/graph.cpp
         src/Kernels.cpp
         src/main.cpp
@@ -187,7 +187,7 @@ SET(UI_FILES
 
 qt_wrap_ui(SOURCE_FILES UI/main.ui)
 qt_wrap_cpp(SOURCE_FILES include/qte.h)
-qt_wrap_cpp(SOURCE_FILES include/GaussianTerrainRaytracingWidget.h include/libs/maya.h include/libs/realtime.h)
+qt_wrap_cpp(SOURCE_FILES include/VectorTerrainRaytracingWidget.h include/libs/maya.h include/libs/realtime.h)
 
 qt_add_executable(${PROJECT_NAME}
         ${SOURCE_FILES}

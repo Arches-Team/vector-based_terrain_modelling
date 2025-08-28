@@ -4,10 +4,11 @@
 #include <ranges>
 
 #include "libs/convex.h"
-#include "GaussianTerrainRaytracingWidget.h"
 #include "libs/heightfield.h"
 
-ToolGraph::ToolGraph(GaussianTerrainRaytracingWidget* parent, Kernels& kernels) : Tool(parent, kernels)
+#include "VectorTerrainRaytracingWidget.h"
+
+ToolGraph::ToolGraph(VectorTerrainRaytracingWidget* parent, Kernels& kernels) : Tool(parent, kernels)
 {
 	initGraph();
 	m_hfBuffer.Generate();
@@ -179,8 +180,8 @@ void ToolGraph::moveNode(Node* node, const Vector2& offset)
 
 	updateKernels();
 	updateRenderer();
-	m_parent->UpdateGaussiansBuffer();
-	m_parent->rasterizeGaussians();
+	m_parent->updatePrimitivesBuffer();
+	m_parent->rasterizePrimitives();
 }
 
 void ToolGraph::updateKernels()
@@ -376,6 +377,9 @@ void ToolGraph::fillSelectionNodes(Node* firstNode)
 
 void ToolGraph::recordGraph()
 {
+	if (!m_parent->saveLogs())
+		return;
+
 	const auto graphFilename = m_parent->getRecordName("graph_nodes");
 	m_graphCrest.print(graphFilename);
 }
@@ -468,14 +472,18 @@ void ToolGraph::mouseReleaseEvent(QMouseEvent* e)
 
 void ToolGraph::mouseWheelEvent(QWheelEvent* e)
 {
-	const double angle = e->angleDelta().y();
+	double angle = e->angleDelta().y();
+
+	// Considered as horizontal scrolling
+	if (e->modifiers() & Qt::AltModifier)
+		angle = e->angleDelta().x();
 
 	// Influence radius
-	if (e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier)
+	if (e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::AltModifier)
 	{
 		if (m_influenceEnabled)
 		{
-			const double scaleRadius = e->angleDelta().y() * 0.0001;
+			const double scaleRadius = angle * 0.0001;
 			m_influenceRadius = max(m_influenceRadius + scaleRadius, 0.);
 
 			updateRenderer();
@@ -546,17 +554,16 @@ void ToolGraph::mouseWheelEvent(QWheelEvent* e)
 				}
 			}
 		}
-		m_parent->UpdateGaussiansBuffer();
-		m_parent->rasterizeGaussians();
+		m_parent->updatePrimitivesBuffer();
+		m_parent->rasterizePrimitives();
 
 		m_parent->recordHF("graph_amplitude");
 
 	}
 	// Depth change
-	else if(e->modifiers() & Qt::ShiftModifier)
+	else if(e->modifiers() & Qt::AltModifier)
 	{
 		const double variation = angle/100.;
-
 		m_depth += static_cast<int>(variation);
 		m_depth = std::max(0, m_depth);
 
@@ -614,8 +621,8 @@ void ToolGraph::keyPressedEvent(QKeyEvent* e)
 				return kernelsToRemove.contains(kernel.get());
 			});
 	    
-		m_parent->UpdateGaussiansBuffer();
-		m_parent->rasterizeGaussians();
+		m_parent->updatePrimitivesBuffer();
+		m_parent->rasterizePrimitives();
 
 		initGraph();
 		updateRenderer();
@@ -647,7 +654,6 @@ void ToolGraph::updateRenderer()
 
 	const HeightField* hf = (HeightField*)m_parent->getHF();
 
-	// TODO: change 1250. for a dynamic value>
 	auto normPos = [&](const Vector2& pos) { return pos * 1250.; };
 
 	int cpt = 0;

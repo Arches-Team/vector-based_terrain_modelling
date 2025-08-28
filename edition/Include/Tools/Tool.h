@@ -5,7 +5,7 @@
 #include "libs/mayarender.h"
 #include "Kernels.h"
 
-class GaussianTerrainRaytracingWidget;
+class VectorTerrainRaytracingWidget;
 
 enum class ToolType
 {
@@ -20,7 +20,7 @@ class Tool
 {
 protected:
 	std::unique_ptr<MayaSimpleRenderer> m_renderer{nullptr};
-	GaussianTerrainRaytracingWidget* m_parent{nullptr};
+	VectorTerrainRaytracingWidget* m_parent{nullptr};
 	Kernels& m_kernels;
 
 	virtual void deleteRenderer()
@@ -33,7 +33,7 @@ protected:
 	}
 
 public:
-	explicit Tool(GaussianTerrainRaytracingWidget* parent, Kernels& kernels): m_parent(parent),
+	explicit Tool(VectorTerrainRaytracingWidget* parent, Kernels& kernels): m_parent(parent),
 		m_kernels(kernels)
 	{
 	}

@@ -38,7 +38,7 @@ SphereTracingWidget::SDFGL::SDFGL(const QString& sdf_code_glsl, const FrameScale
   QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
   if (pPath.isEmpty())
   {
-    std::cout << "MeshWidget::ReloadShaders() : SOLUTION_DIR undefined" << std::endl;
+    std::cout << "MeshWidget::reloadShaders() : SOLUTION_DIR undefined" << std::endl;
     std::cin.get();
     exit(-1);
   }
@@ -385,12 +385,12 @@ void SphereTracingWidget::paintGL()
 /*!
 \brief Reload the shaders of the widget. Useful for realtime editing and fine tuning of the rendering.
 */
-void SphereTracingWidget::ReloadShaders()
+void SphereTracingWidget::reloadShaders()
 {
   QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
   if (pPath.isEmpty())
   {
-    std::cout << "MeshWidget::ReloadShaders() : SOLUTION_DIR undefined" << std::endl;
+    std::cout << "MeshWidget::reloadShaders() : SOLUTION_DIR undefined" << std::endl;
     std::cin.get();
     exit(-1);
   }

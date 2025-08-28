@@ -2,7 +2,7 @@
 
 #include "libs/heightfield.h"
 
-#include "GaussianTerrainRaytracingWidget.h"
+#include "VectorTerrainRaytracingWidget.h"
 #include "utils.h"
 #include "Kernels/GaussianKernel.h"
 #include "Kernels/FactoryKernel.h"
@@ -16,8 +16,8 @@ void ToolBrush::moveGaussians(const Vector2& dest)
 		k->translate(offset);
 	}
 	updateShowKernels();
-	m_parent->UpdateGaussiansBuffer();
-	m_parent->rasterizeGaussians();
+	m_parent->updatePrimitivesBuffer();
+	m_parent->rasterizePrimitives();
 }
 
 void ToolBrush::addToSelection()
@@ -40,9 +40,9 @@ void ToolBrush::addToSelection()
 	}
 	if (m_kernels.size() != currentSize)
 	{
-		emit m_parent->nbGaussiansChanged(m_parent->getNbGaussians());
+		emit m_parent->nbPrimitivesChanged(m_parent->getNbPrimitives());
 		updateShowKernels();
-		m_parent->rasterizeGaussians();
+		m_parent->rasterizePrimitives();
 	}
 }
 
@@ -195,9 +195,8 @@ void ToolBrush::apply()
 
 	if (sizeBefore > m_kernels.size())
 	{
-		emit m_parent->nbGaussiansChanged(m_parent->getNbGaussians());
-		//m_parent->UpdateGaussiansBuffer();
-		m_parent->rasterizeGaussians();
+		emit m_parent->nbPrimitivesChanged(m_parent->getNbPrimitives());
+		m_parent->rasterizePrimitives();
 	}
 }
 
@@ -205,9 +204,8 @@ void ToolBrush::update()
 {
 	updateShowKernels();
 	updateRenderer();
-	emit m_parent->nbGaussiansChanged(m_parent->getNbGaussians());
-	//m_parent->UpdateGaussiansBuffer();
-	m_parent->rasterizeGaussians();
+	emit m_parent->nbPrimitivesChanged(m_parent->getNbPrimitives());
+	m_parent->rasterizePrimitives();
 }
 
 void ToolBrush::keyPressedEvent(QKeyEvent* e)
@@ -215,15 +213,14 @@ void ToolBrush::keyPressedEvent(QKeyEvent* e)
 	switch (e->key())
 	{
 	case Qt::Key_Delete:
-		qDebug() << "delete";
 		if (m_state == State::MOVE)
 		{
 			const auto sizeBefore = m_kernels.size();
 			m_kernels.clear(m_selectedKernels);
 			if (sizeBefore > m_kernels.size())
 			{
-				emit m_parent->nbGaussiansChanged(m_parent->getNbGaussians());
-				m_parent->rasterizeGaussians();
+				emit m_parent->nbPrimitivesChanged(m_parent->getNbPrimitives());
+				m_parent->rasterizePrimitives();
 			}
 
 			reset();
@@ -303,7 +300,7 @@ void ToolBrush::mouseWheelEvent(QWheelEvent* e)
 {
 	if (m_state == State::MOVE)
 	{
-		const bool isRotation = e->modifiers() & Qt::ShiftModifier;
+		const bool isRotation = e->modifiers() & Qt::AltModifier;
 
 
 		double val = -e->angleDelta().y() * 0.001;
@@ -330,8 +327,8 @@ void ToolBrush::mouseWheelEvent(QWheelEvent* e)
 
 		updateShowKernels();
 		updateRenderer();
-		m_parent->UpdateGaussiansBuffer();
-		m_parent->rasterizeGaussians();
+		m_parent->updatePrimitivesBuffer();
+		m_parent->rasterizePrimitives();
 
 		m_parent->recordHF("brush_" + isRotation ? "rotation" : "scale");
 	}

@@ -108,15 +108,13 @@ void Graph::addEdge(Node& a, Node& b, const double weight) const
 		b.addEdge(a, weight);
 }
 
-// TODO: fix for oriented graph
 void Graph::reduceGraph()
 {
 	// Primitives are evaluated between [-1 ; 1] which results in 4. for the longest edge
 	reduceGraph(4.);
 }
 
-
-// TODO fix for oriented graph
+// Warning : not tested for oriented graph.
 void Graph::reduceGraph(const double distance)
 {
 	auto it = m_nodes.begin();

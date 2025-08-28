@@ -33,7 +33,7 @@ private:
 	QPointF m_oldPos;
 
 public:
-	ToolBrush(GaussianTerrainRaytracingWidget* parent, Kernels& kernels): Tool(parent, kernels)
+	ToolBrush(VectorTerrainRaytracingWidget* parent, Kernels& kernels): Tool(parent, kernels)
 	{
 	}
 

@@ -2,7 +2,7 @@
 
 #include "libs/evector.h"
 
-#include "GaussianTerrainRaytracingWidget.h"
+#include "VectorTerrainRaytracingWidget.h"
 
 
 /*
@@ -70,7 +70,7 @@ void ToolEdit::mousePressEvent(QMouseEvent* e)
 {
 	if (e->button() == Qt::LeftButton)
 	{
-		if (m_mode == Mode::AMPLITUDE || m_mode == Mode::WARP || m_mode == Mode::MOVE || m_mode == Mode::AMPLITUDELR || m_mode == Mode::AMPLITUDEHR)
+		if (m_mode != Mode::ERASE)
 		{
 			const HeightField* h = (HeightField*)m_parent->getHF();
 			double t;
@@ -148,7 +148,6 @@ void ToolEdit::mouseWheelEvent(QWheelEvent* e)
 	const double scaleRadius = e->angleDelta().y() / 5.;
 
 	m_radius = max(m_radius + scaleRadius, 1.);
-	qDebug() << "New radius " << m_radius;
 
 	// Delete the circle renderer
 	deleteRenderer();
@@ -175,8 +174,8 @@ void ToolEdit::eraseGaussian(const Vector& intersectionPoint, const Vector2& box
 
 	if (sizeBefore > m_kernels.size())
 	{
-		emit m_parent->nbGaussiansChanged(m_parent->getNbGaussians());
-		m_parent->rasterizeGaussians();
+		emit m_parent->nbPrimitivesChanged(m_parent->getNbPrimitives());
+		m_parent->rasterizePrimitives();
 	}
 }
 
@@ -199,8 +198,8 @@ void ToolEdit::changeAmplitude(const Vector2& mouseScreenPos, double size_min, d
 			k->amplitude() *= 1. + variation * (1. - falloff);
 		}
 	}
-	m_parent->UpdateGaussiansBuffer();
-	m_parent->rasterizeGaussians();
+	m_parent->updatePrimitivesBuffer();
+	m_parent->rasterizePrimitives();
 }
 
 void ToolEdit::warp(const Vector2& mouseScreenPos)
@@ -234,8 +233,8 @@ void ToolEdit::warp(const Vector2& mouseScreenPos)
 		k->posY() = static_cast<float>(pointRotate[1]);
 	}
 
-	m_parent->UpdateGaussiansBuffer();
-	m_parent->rasterizeGaussians();
+	m_parent->updatePrimitivesBuffer();
+	m_parent->rasterizePrimitives();
 }
 
 void ToolEdit::move(const Vector2& intersection)
@@ -262,8 +261,8 @@ void ToolEdit::move(const Vector2& intersection)
 			k->scale(variation, factor);
 		}
 	}
-	m_parent->UpdateGaussiansBuffer();
-	m_parent->rasterizeGaussians();
+	m_parent->updatePrimitivesBuffer();
+	m_parent->rasterizePrimitives();
 }
 
 /*!

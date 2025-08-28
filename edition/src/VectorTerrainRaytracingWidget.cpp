@@ -1,6 +1,5 @@
-#include "GaussianTerrainRaytracingWidget.h"
+#include "VectorTerrainRaytracingWidget.h"
 
-#include <QtCore/qfile.h>
 #include <QtGui/QMouseEvent>
 #include <QtGui/qpainter.h>
 #include <QtWidgets/qfiledialog.h>
@@ -19,7 +18,7 @@
 #include <Kernels/GaussianKernel.h>
 
 
-GaussianTerrainRaytracingWidget::GaussianTerrainRaytracingWidget(): m_accelerationGridShader(), m_rasterizerShader()
+VectorTerrainRaytracingWidget::VectorTerrainRaytracingWidget(): m_accelerationGridShader(), m_rasterizerShader()
 {
 	// Create the log folder
 	std::time_t now = std::time(nullptr);
@@ -48,7 +47,7 @@ GaussianTerrainRaytracingWidget::GaussianTerrainRaytracingWidget(): m_accelerati
 	m_logFolder = QString::fromStdString(folderName);
 }
 
-GaussianTerrainRaytracingWidget::~GaussianTerrainRaytracingWidget()
+VectorTerrainRaytracingWidget::~VectorTerrainRaytracingWidget()
 {
 	if (m_influenceRenderer)
 	{
@@ -56,11 +55,11 @@ GaussianTerrainRaytracingWidget::~GaussianTerrainRaytracingWidget()
 	}
 }
 
-void GaussianTerrainRaytracingWidget::initializeGL()
+void VectorTerrainRaytracingWidget::initializeGL()
 {
 	TerrainRaytracingWidget::initializeGL();
 
-	m_ssbo_gaussians.Generate();
+	m_ssbo_primitives.Generate();
 	m_gridCellCountsBuffer.Generate();
 	m_gridCellMappingsBuffer.Generate();
 	m_detailsBuffer.Generate();
@@ -71,20 +70,20 @@ void GaussianTerrainRaytracingWidget::initializeGL()
 	                                 nullptr, GL_STREAM_READ);
 	loadShader();
 
-	connect(this, SIGNAL(nbGaussiansChanged(int)), this, SLOT(nbGaussiansChanged()));
+	connect(this, SIGNAL(nbPrimitivesChanged(int)), this, SLOT(nbPrimitivesChanged()));
 
 	clear();
 }
 
-void GaussianTerrainRaytracingWidget::ReloadShaders()
+void VectorTerrainRaytracingWidget::reloadShaders()
 {
-	TerrainRaytracingWidget::ReloadShaders();
+	TerrainRaytracingWidget::reloadShaders();
 	loadShader();
 }
 
-void GaussianTerrainRaytracingWidget::SetNbGaussians(int val)
+void VectorTerrainRaytracingWidget::setNbPrimitives(int val)
 {
-	m_nbGaussiansToShow = val;
+	m_nbPrimitivesToShow = val;
 	glUseProgram(shaderProgram);
 	glUniform1i(32, val);
 
@@ -94,92 +93,58 @@ void GaussianTerrainRaytracingWidget::SetNbGaussians(int val)
 
 	updateInfluenceRenderers();
 	computeAccelerationGrid();
-	rasterizeGaussians();
+	rasterizePrimitives();
 
 	recordHF("showNbGaussians");
 }
 
-void GaussianTerrainRaytracingWidget::showInfluence(const bool& show)
+void VectorTerrainRaytracingWidget::showInfluence(const bool& show)
 {
 	m_showInfluence = show;
 	updateInfluenceRenderers();
 }
 
-int GaussianTerrainRaytracingWidget::getNbGaussians()
+int VectorTerrainRaytracingWidget::getNbPrimitives()
 {
 	return m_kernels.size();
 }
 
-//TODO make only one function for loading
-void GaussianTerrainRaytracingWidget::openGaussiansCSVFile(const QString& filename)
+void VectorTerrainRaytracingWidget::loadPrimitivesFile(const QString& filename, const QString& ext)
 {
 	initHF();
-	m_kernels.loadCSVFile(filename);
+	if (ext == "csv")
+		m_kernels.loadCSVFile(filename);
+	else if (ext == "npy")
+		m_kernels.loadNPYFile(filename);
 
-	emit nbGaussiansChanged(m_kernels.size());
-	rasterizeGaussians();
+	emit nbPrimitivesChanged(m_kernels.size());
+	rasterizePrimitives();
 	resetCam();
 	
 	getHF();
 	m_originalKernels = Kernels(m_kernels);
 }
 
-void GaussianTerrainRaytracingWidget::openGaussiansNPYFile(const QString& filename)
+void VectorTerrainRaytracingWidget::saveCSVFile(const QString& filename)
 {
-	initHF();
-	m_kernels.loadNPYFile(filename);
-
-	emit nbGaussiansChanged(m_kernels.size());
-	rasterizeGaussians();
-	resetCam();
-
-	getHF();
-	m_originalKernels = Kernels(m_kernels);
+	m_kernels.saveCSVFile(filename);
 }
 
-// TODO: move to Kernels
-void GaussianTerrainRaytracingWidget::saveGaussiansCSVFile(const QString& filename)
-{
-	QFile file(filename);
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-	{
-		std::cout << file.errorString().toStdString() << std::endl;
-		return;
-	}
-	QTextStream out(&file);
-
-	bool isBeginning = true;
-	for (auto& k : m_kernels)
-	{
-		auto data = k->get();
-		for (const float& d : data)
-		{
-			if (!isBeginning)
-				out << ",";
-			isBeginning = false;
-			out << QString::number(d);
-		}
-	}
-	out << "\n";
-
-	file.close();
-}
-
-void GaussianTerrainRaytracingWidget::setRenderResolution(int resolution)
+void VectorTerrainRaytracingWidget::setRenderResolution(int resolution)
 {
 	m_hfSize = resolution;
 	delete hf;
 	hf = nullptr;
 	initHF(m_hfSize);
-	UpdateGaussiansBuffer();
-	emit nbGaussiansChanged(m_kernels.size());
-	rasterizeGaussians();
+	updatePrimitivesBuffer();
+	emit nbPrimitivesChanged(m_kernels.size());
+	rasterizePrimitives();
 
 	std::cout << "Set render resolution to " << resolution << std::endl;
 	recordHF("new_res");
 }
 
-void GaussianTerrainRaytracingWidget::addDetailsKernel(const ScalarField2& gt)
+void VectorTerrainRaytracingWidget::addDetailsKernel(const ScalarField2& gt)
 {
 	setDetails(gt);
 
@@ -202,8 +167,8 @@ void GaussianTerrainRaytracingWidget::addDetailsKernel(const ScalarField2& gt)
 
 	m_originalKernels = Kernels(m_kernels);
 
-	emit nbGaussiansChanged(getNbGaussians());
-	rasterizeGaussians();
+	emit nbPrimitivesChanged(getNbPrimitives());
+	rasterizePrimitives();
 }
 
 /*
@@ -211,7 +176,7 @@ void GaussianTerrainRaytracingWidget::addDetailsKernel(const ScalarField2& gt)
 * \param suffix: the suffix to add to the filename
 * \param sf: the scalar field to record, if nullptr, the current height field is recorded
 */
-void GaussianTerrainRaytracingWidget::recordHF(const QString& suffix, const ScalarField2* sf)
+void VectorTerrainRaytracingWidget::recordHF(const QString& suffix, const ScalarField2* sf)
 {
 	if (!m_saveLogs)
 		return;
@@ -240,7 +205,7 @@ void GaussianTerrainRaytracingWidget::recordHF(const QString& suffix, const Scal
 
 			const float maxAmplitude = m_kernels.getMaxAbsAmplitude();
 
-			for (int i = 0; i < m_nbGaussiansToShow; i++)
+			for (int i = 0; i < m_nbPrimitivesToShow; i++)
 			{
 				// Alpha value
 				float alpha = std::abs(m_kernels[i].amplitude() / maxAmplitude);
@@ -265,7 +230,7 @@ void GaussianTerrainRaytracingWidget::recordHF(const QString& suffix, const Scal
 /*
 * \brief Initialize the height field with a dummy flat scalar field
 */
-void GaussianTerrainRaytracingWidget::initHF(int size)
+void VectorTerrainRaytracingWidget::initHF(int size)
 {
 	if (hf == nullptr)
 	{
@@ -277,17 +242,17 @@ void GaussianTerrainRaytracingWidget::initHF(int size)
 	}
 }
 
-bool GaussianTerrainRaytracingWidget::isControlShiftAltPressed(QMouseEvent* e)
+bool VectorTerrainRaytracingWidget::isControlShiftAltPressed(QMouseEvent* e)
 {
 	return (e->modifiers() & Qt::ControlModifier) || isShiftAltPressed(e);
 }
 
-bool GaussianTerrainRaytracingWidget::isShiftAltPressed(QMouseEvent* e)
+bool VectorTerrainRaytracingWidget::isShiftAltPressed(QMouseEvent* e)
 {
 	return (e->modifiers() & Qt::ShiftModifier) || (e->modifiers() & Qt::AltModifier);
 }
 
-void GaussianTerrainRaytracingWidget::resetCam()
+void VectorTerrainRaytracingWidget::resetCam()
 {
 	auto box = hf->GetBox();
 	double a, b;
@@ -296,7 +261,7 @@ void GaussianTerrainRaytracingWidget::resetCam()
 	SetCamera(cam);
 }
 
-void GaussianTerrainRaytracingWidget::paintGL()
+void VectorTerrainRaytracingWidget::paintGL()
 {
 	glUseProgram(shaderProgram);
 
@@ -318,13 +283,13 @@ void GaussianTerrainRaytracingWidget::paintGL()
 		m_currentTool->render();
 }
 
-void GaussianTerrainRaytracingWidget::SetAlbedo(const QImage& img)
+void VectorTerrainRaytracingWidget::setAlbedo(const QImage& img)
 {
 	m_texture = img;
-	TerrainRaytracingWidget::SetAlbedo(img);
+	SetAlbedo(img);
 }
 
-void GaussianTerrainRaytracingWidget::updateInfluenceRenderers()
+void VectorTerrainRaytracingWidget::updateInfluenceRenderers()
 {
 	m_influenceRenderer = nullptr;
 
@@ -352,7 +317,7 @@ void GaussianTerrainRaytracingWidget::updateInfluenceRenderers()
 			// Alpha value
 			color[3] = std::clamp((std::abs(m_kernels[i].amplitude()) / maxAmplitude)+0.f, 0.4f, 1.f);
 
-			if (i >= m_nbGaussiansToShow)
+			if (i >= m_nbPrimitivesToShow)
 				color[3] = 0.;
 
 			auto ellipse = m_kernels[i].getEllipse(1.f);
@@ -387,7 +352,7 @@ void GaussianTerrainRaytracingWidget::updateInfluenceRenderers()
 /*
 * \brief Set the current tool type
 */
-void GaussianTerrainRaytracingWidget::setTool(const ToolType& type)
+void VectorTerrainRaytracingWidget::setTool(const ToolType& type)
 {
 	switch (type)
 	{
@@ -407,7 +372,7 @@ void GaussianTerrainRaytracingWidget::setTool(const ToolType& type)
 	}
 }
 
-QString GaussianTerrainRaytracingWidget::getRecordName(const QString& suffix)
+QString VectorTerrainRaytracingWidget::getRecordName(const QString& suffix)
 {
 	if (m_logFolder.isEmpty())
 		return "";
@@ -428,27 +393,27 @@ QString GaussianTerrainRaytracingWidget::getRecordName(const QString& suffix)
 /*
 * \brief load the shader
 */
-void GaussianTerrainRaytracingWidget::loadShader()
+void VectorTerrainRaytracingWidget::loadShader()
 {
 	QString fullPath = QString::fromStdString(
-		std::string(SOLUTION_DIR) + "/shaders/gaussians_raytrace.glsl");
+		std::string(SOLUTION_DIR) + "/shaders/primitives_raytrace.glsl");
 	QByteArray ba = fullPath.toLocal8Bit();
 	shaderProgram = read_program(ba.data());
 
-	fullPath = QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/gaussians_rasterizer.glsl");
+	fullPath = QString::fromStdString(std::string(SOLUTION_DIR) + "/shaders/primitives_rasterizer.glsl");
 	ba = fullPath.toLocal8Bit();
 	m_rasterizerShader = read_program(ba.data());
 
 	fullPath = QString::fromStdString(
-		std::string(SOLUTION_DIR) + "/shaders/gaussians_acceleration_grid.glsl");
+		std::string(SOLUTION_DIR) + "/shaders/primitives_acceleration_grid.glsl");
 	ba = fullPath.toLocal8Bit();
 	m_accelerationGridShader = read_program(ba.data());
 }
 
 /*
-* \brief Compute the number of gaussians to show
+* \brief Compute the number of primitives to show
 */
-void GaussianTerrainRaytracingWidget::nbGaussiansChanged()
+void VectorTerrainRaytracingWidget::nbPrimitivesChanged()
 {
 	if (!m_kernels.empty())
 	{
@@ -464,30 +429,28 @@ void GaussianTerrainRaytracingWidget::nbGaussiansChanged()
 		updateInfluenceRenderers();
 
 		auto kernelsArray = m_kernels.getArray();
-		m_ssbo_gaussians.SetData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * kernelsArray.size(), kernelsArray.data(),
+		m_ssbo_primitives.SetData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * kernelsArray.size(), kernelsArray.data(),
 		                         GL_STATIC_READ);
 		computeAccelerationGrid();
 	}
 }
 
-void GaussianTerrainRaytracingWidget::UpdateGaussiansBuffer()
+void VectorTerrainRaytracingWidget::updatePrimitivesBuffer()
 {
 	if (!m_kernels.empty())
 	{
 		auto kernelsArray = m_kernels.getArray();
-		m_ssbo_gaussians.SetSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float) * kernelsArray.size(),
+		m_ssbo_primitives.SetSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float) * kernelsArray.size(),
 		                            kernelsArray.data());
 		computeAccelerationGrid();
 		updateInfluenceRenderers();
 	}
 }
 
-void GaussianTerrainRaytracingWidget::exportToRes(int res)
+void VectorTerrainRaytracingWidget::exportToRes(int res)
 {
 	const QString filename = QFileDialog::getOpenFileName(this, tr("Open Ground Truth"), QString(),
 		tr("Image files(*.jpg, *.png)"));
-
-	// TODO: rework the entire function, a lot of copy-paste
 
 	if (filename.isEmpty())
 	{
@@ -503,23 +466,23 @@ void GaussianTerrainRaytracingWidget::exportToRes(int res)
 		Kernels currentKernels(m_kernels);
 		m_kernels = m_originalKernels;
 
-		emit nbGaussiansChanged(m_kernels.size());
-		UpdateGaussiansBuffer();
-		rasterizeGaussians();
+		emit nbPrimitivesChanged(m_kernels.size());
+		updatePrimitivesBuffer();
+		rasterizePrimitives();
 
 		m_kernels = currentKernels;
 		
-		emit nbGaussiansChanged(m_kernels.size());
-		UpdateGaussiansBuffer();
-		rasterizeGaussians();
+		emit nbPrimitivesChanged(m_kernels.size());
+		updatePrimitivesBuffer();
+		rasterizePrimitives();
 		recordHF(QString::fromStdString(std::to_string(res)));
 
 		delete hf;
 		hf = nullptr;
 		initHF();
-		emit nbGaussiansChanged(m_kernels.size());
-		UpdateGaussiansBuffer();
-		rasterizeGaussians();
+		emit nbPrimitivesChanged(m_kernels.size());
+		updatePrimitivesBuffer();
+		rasterizePrimitives();
 
 		QMessageBox::information(
 			this,
@@ -571,16 +534,16 @@ void GaussianTerrainRaytracingWidget::exportToRes(int res)
 
 	m_details = ScalarField2(m_details, 0.);
 
-	emit nbGaussiansChanged(m_kernels.size());
-	UpdateGaussiansBuffer();
-	rasterizeGaussians();
+	emit nbPrimitivesChanged(m_kernels.size());
+	updatePrimitivesBuffer();
+	rasterizePrimitives();
 	
 	setDetails(gt);
 	m_kernels = currentKernels;
 
-	emit nbGaussiansChanged(m_kernels.size());
-	UpdateGaussiansBuffer();
-	rasterizeGaussians();
+	emit nbPrimitivesChanged(m_kernels.size());
+	updatePrimitivesBuffer();
+	rasterizePrimitives();
 	recordHF(QString::fromStdString(std::to_string(res)));
 
 	// Reset
@@ -593,9 +556,9 @@ void GaussianTerrainRaytracingWidget::exportToRes(int res)
 	for (int i = 0; i < m_details.VertexSize(); i++)
 		tmpData[i] = m_details.at(i);
 	m_detailsBuffer.SetData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * m_details.VertexSize(), &tmpData.front(), GL_STREAM_READ);
-	emit nbGaussiansChanged(m_kernels.size());
-	UpdateGaussiansBuffer();
-	rasterizeGaussians();
+	emit nbPrimitivesChanged(m_kernels.size());
+	updatePrimitivesBuffer();
+	rasterizePrimitives();
 
 	QMessageBox::information(
 		this,
@@ -603,7 +566,7 @@ void GaussianTerrainRaytracingWidget::exportToRes(int res)
 		tr("Export finished!"));
 }
 
-void GaussianTerrainRaytracingWidget::computeAccelerationGrid()
+void VectorTerrainRaytracingWidget::computeAccelerationGrid()
 {
 	if (!m_kernels.empty())
 	{
@@ -615,7 +578,7 @@ void GaussianTerrainRaytracingWidget::computeAccelerationGrid()
 		glUniform2i(glGetUniformLocation(m_accelerationGridShader, "gridResolution"), m_gridSize, m_gridSize);
 		glUniform1i(glGetUniformLocation(m_accelerationGridShader, "maxPerCell"), m_maxPerCell);
 		glUniform1i(glGetUniformLocation(m_accelerationGridShader, "gaussianOffset"), utils::sizeKernel());
-		m_ssbo_gaussians.BindAt(GL_SHADER_STORAGE_BUFFER, 0);
+		m_ssbo_primitives.BindAt(GL_SHADER_STORAGE_BUFFER, 0);
 		m_gridCellCountsBuffer.BindAt(GL_SHADER_STORAGE_BUFFER, 1);
 		m_gridCellMappingsBuffer.BindAt(GL_SHADER_STORAGE_BUFFER, 2);
 
@@ -627,12 +590,10 @@ void GaussianTerrainRaytracingWidget::computeAccelerationGrid()
 	}
 }
 
-// TODO: maybe move this function to Kernels
-void GaussianTerrainRaytracingWidget::rasterizeGaussians()
+void VectorTerrainRaytracingWidget::rasterizePrimitives()
 {
 	if (m_kernels.size() > 0)
 	{
-		// TODO: Move this computation on GPU ?
 		std::vector<float> data;
 		const int totalBufferSize = hf->GetSizeX() * hf->GetSizeY();
 		data.resize(totalBufferSize);
@@ -641,7 +602,7 @@ void GaussianTerrainRaytracingWidget::rasterizeGaussians()
 		glUseProgram(m_rasterizerShader);
 
 		hfBuffer.BindAt(GL_SHADER_STORAGE_BUFFER, 0);
-		m_ssbo_gaussians.BindAt(GL_SHADER_STORAGE_BUFFER, 1);
+		m_ssbo_primitives.BindAt(GL_SHADER_STORAGE_BUFFER, 1);
 
 		m_gridCellCountsBuffer.BindAt(GL_SHADER_STORAGE_BUFFER, 2);
 		m_gridCellMappingsBuffer.BindAt(GL_SHADER_STORAGE_BUFFER, 3);
@@ -653,7 +614,7 @@ void GaussianTerrainRaytracingWidget::rasterizeGaussians()
 		glUniform2f(glGetUniformLocation(m_rasterizerShader, "zRange"), zmin, zmax);
 		glUniform1f(glGetUniformLocation(m_rasterizerShader, "noiseLevel"), m_noiseLevel);
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "gaussianOffset"), utils::sizeKernel());
-		glUniform1i(glGetUniformLocation(m_rasterizerShader, "showNbGaussians"), m_nbGaussiansToShow);
+		glUniform1i(glGetUniformLocation(m_rasterizerShader, "showNbGaussians"), m_nbPrimitivesToShow);
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "gaussianID"), static_cast<int>(KernelType::GAUSSIAN));
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "detailsID"), static_cast<int>(KernelType::DETAILS));
 		glUniform1i(glGetUniformLocation(m_rasterizerShader, "detailsSize"), m_details.GetSizeX());
@@ -676,7 +637,7 @@ void GaussianTerrainRaytracingWidget::rasterizeGaussians()
 	}
 }
 
-const ScalarField2* GaussianTerrainRaytracingWidget::getHF() const
+const ScalarField2* VectorTerrainRaytracingWidget::getHF() const
 {
 	if (hf != nullptr)
 	{
@@ -694,7 +655,7 @@ const ScalarField2* GaussianTerrainRaytracingWidget::getHF() const
 	return hf;
 }
 
-void GaussianTerrainRaytracingWidget::mouseMoveEvent(QMouseEvent* e)
+void VectorTerrainRaytracingWidget::mouseMoveEvent(QMouseEvent* e)
 {
 	if (m_currentTool && !isShiftAltPressed(e))
 		m_currentTool->mouseMoveEvent(e);
@@ -702,7 +663,7 @@ void GaussianTerrainRaytracingWidget::mouseMoveEvent(QMouseEvent* e)
 	TerrainRaytracingWidget::mouseMoveEvent(e);
 }
 
-void GaussianTerrainRaytracingWidget::mousePressEvent(QMouseEvent* e)
+void VectorTerrainRaytracingWidget::mousePressEvent(QMouseEvent* e)
 {
 	if (m_currentTool && !isControlShiftAltPressed(e))
 		m_currentTool->mousePressEvent(e);
@@ -710,7 +671,7 @@ void GaussianTerrainRaytracingWidget::mousePressEvent(QMouseEvent* e)
 	TerrainRaytracingWidget::mousePressEvent(e);
 }
 
-void GaussianTerrainRaytracingWidget::mouseReleaseEvent(QMouseEvent* e)
+void VectorTerrainRaytracingWidget::mouseReleaseEvent(QMouseEvent* e)
 {
 	if (m_currentTool && !isControlShiftAltPressed(e))
 		m_currentTool->mouseReleaseEvent(e);
@@ -718,7 +679,23 @@ void GaussianTerrainRaytracingWidget::mouseReleaseEvent(QMouseEvent* e)
 	TerrainRaytracingWidget::mouseReleaseEvent(e);
 }
 
-void GaussianTerrainRaytracingWidget::setDetails(const ScalarField2& gt)
+void VectorTerrainRaytracingWidget::wheelEvent(QWheelEvent* e)
+{
+	if (m_currentTool && (e->modifiers() & Qt::ControlModifier) || (e->modifiers() & Qt::AltModifier))
+		m_currentTool->mouseWheelEvent(e);
+	else
+		TerrainRaytracingWidget::wheelEvent(e);
+}
+
+void VectorTerrainRaytracingWidget::keyPressEvent(QKeyEvent* e)
+{
+	if (m_currentTool)
+		m_currentTool->keyPressedEvent(e);
+
+	TerrainRaytracingWidget::keyPressEvent(e);
+}
+
+void VectorTerrainRaytracingWidget::setDetails(const ScalarField2& gt)
 {
 	getHF();
 	hf->SetRange(0, 1);
@@ -736,23 +713,7 @@ void GaussianTerrainRaytracingWidget::setDetails(const ScalarField2& gt)
 	m_detailsBuffer.SetData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * m_details.VertexSize(), &tmpData.front(), GL_STREAM_READ);
 }
 
-void GaussianTerrainRaytracingWidget::wheelEvent(QWheelEvent* e)
-{
-	if (m_currentTool && (e->modifiers() & Qt::ControlModifier) || (e->modifiers() & Qt::ShiftModifier))
-		m_currentTool->mouseWheelEvent(e);
-	else
-	    TerrainRaytracingWidget::wheelEvent(e);
-}
-
-void GaussianTerrainRaytracingWidget::keyPressEvent(QKeyEvent* e)
-{
-	if (m_currentTool)
-		m_currentTool->keyPressedEvent(e);
-
-	TerrainRaytracingWidget::keyPressEvent(e);
-}
-
-void GaussianTerrainRaytracingWidget::saveBrush()
+void VectorTerrainRaytracingWidget::saveBrush()
 {
 	const QString dir("Data/brushes/templates/");
 	QDir().mkpath(dir);
@@ -765,7 +726,7 @@ void GaussianTerrainRaytracingWidget::saveBrush()
 	}
 }
 
-void GaussianTerrainRaytracingWidget::openBrush(QString filename)
+void VectorTerrainRaytracingWidget::openBrush(QString filename)
 {
 	if (filename.isEmpty())
 		filename = QFileDialog::getOpenFileName(this, tr("Save selected brush"), QString("Data/brushes/"),
@@ -777,7 +738,7 @@ void GaussianTerrainRaytracingWidget::openBrush(QString filename)
 	}
 }
 
-void GaussianTerrainRaytracingWidget::updateBrushThreshold(const int val)
+void VectorTerrainRaytracingWidget::updateBrushThreshold(const int val)
 {
 	m_brushThreshold = static_cast<float>(val) / 100.f;
 	if (m_currentTool)
@@ -785,7 +746,7 @@ void GaussianTerrainRaytracingWidget::updateBrushThreshold(const int val)
 }
 
 
-void GaussianTerrainRaytracingWidget::updateDepthGraphTool(const int val) const
+void VectorTerrainRaytracingWidget::updateDepthGraphTool(const int val) const
 {
 	if (m_currentTool && m_currentTool->type() == ToolType::GRAPH)
 	{
@@ -794,7 +755,7 @@ void GaussianTerrainRaytracingWidget::updateDepthGraphTool(const int val) const
 	}
 }
 
-void GaussianTerrainRaytracingWidget::updateStiffnessGraphTool(const int val) const
+void VectorTerrainRaytracingWidget::updateStiffnessGraphTool(const int val) const
 {
 	if (m_currentTool && m_currentTool->type() == ToolType::GRAPH)
 	{
@@ -803,7 +764,7 @@ void GaussianTerrainRaytracingWidget::updateStiffnessGraphTool(const int val) co
 	}
 }
 
-void GaussianTerrainRaytracingWidget::updateBlendGraphTool(int val) const
+void VectorTerrainRaytracingWidget::updateBlendGraphTool(int val) const
 {
 	if (m_currentTool && m_currentTool->type() == ToolType::GRAPH)
 	{
@@ -812,7 +773,7 @@ void GaussianTerrainRaytracingWidget::updateBlendGraphTool(int val) const
 	}
 }
 
-void GaussianTerrainRaytracingWidget::setScaleGraphTool(bool scale) const
+void VectorTerrainRaytracingWidget::setScaleGraphTool(bool scale) const
 {
 	if (m_currentTool && m_currentTool->type() == ToolType::GRAPH)
 	{
@@ -821,7 +782,7 @@ void GaussianTerrainRaytracingWidget::setScaleGraphTool(bool scale) const
 	}
 }
 
-void GaussianTerrainRaytracingWidget::setInfluenceRegionGraphTool(bool enable) const
+void VectorTerrainRaytracingWidget::setInfluenceRegionGraphTool(bool enable) const
 {
 	if (m_currentTool && m_currentTool->type() == ToolType::GRAPH)
 	{
@@ -830,7 +791,7 @@ void GaussianTerrainRaytracingWidget::setInfluenceRegionGraphTool(bool enable) c
 	}
 }
 
-void GaussianTerrainRaytracingWidget::setEditMode(const ToolEdit::Mode& mode) const
+void VectorTerrainRaytracingWidget::setEditMode(const ToolEdit::Mode& mode) const
 {
 	if (m_currentTool && m_currentTool->type() == ToolType::EDIT)
 	{
@@ -839,7 +800,7 @@ void GaussianTerrainRaytracingWidget::setEditMode(const ToolEdit::Mode& mode) co
 	}
 }
 
-void GaussianTerrainRaytracingWidget::clear()
+void VectorTerrainRaytracingWidget::clear()
 {
 	if (hf == nullptr)
 	{
@@ -851,21 +812,21 @@ void GaussianTerrainRaytracingWidget::clear()
 	m_kernels.clear();
 	// Dummy kernel with 0 amplitude to render an empty terrain
 	m_kernels.add<GaussianKernel>({ 0.05f, 0.1f, 1.f, 2.5f, 0.f, 0.f, 0.f, 1.f });
-	UpdateGaussiansBuffer();
-	nbGaussiansChanged(0);
+	updatePrimitivesBuffer();
+	nbPrimitivesChanged(0);
 	updateInfluenceRenderers();
 	computeAccelerationGrid();
-	rasterizeGaussians();
+	rasterizePrimitives();
 	m_kernels.clear();
 }
 
-void GaussianTerrainRaytracingWidget::setNoiseLevel(const int val)
+void VectorTerrainRaytracingWidget::setNoiseLevel(const int val)
 {
 	m_noiseLevel = static_cast<float>(val) / 500.f;
-	rasterizeGaussians();
+	rasterizePrimitives();
 }
 
-void GaussianTerrainRaytracingWidget::updateShowGraphTool(const bool show) const
+void VectorTerrainRaytracingWidget::updateShowGraphTool(const bool show) const
 {
 	if (m_currentTool && m_currentTool->type() == ToolType::GRAPH)
 	{
@@ -874,7 +835,7 @@ void GaussianTerrainRaytracingWidget::updateShowGraphTool(const bool show) const
 	}
 }
 
-void GaussianTerrainRaytracingWidget::updateTranslateOnlyGraphTool(const bool translate) const
+void VectorTerrainRaytracingWidget::updateTranslateOnlyGraphTool(const bool translate) const
 {
 	if (m_currentTool && m_currentTool->type() == ToolType::GRAPH)
 	{

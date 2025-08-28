@@ -127,11 +127,9 @@ void Kernel::scale(Vector2 axis, float factor)
         }
     }
 
-    // TODO: throw an exception
     if (minEigenValueId == -1)
     {
-        std::cerr << "A calculation of the minimum value of a vector went wrong. Please check the scaling of primitives." << std::endl;
-        return;
+        throw std::logic_error("No eigenvalues found. Please check the scaling of primitives.");
     }
         
     Eigen::VectorXf z = solver.eigenvectors().col(minEigenValueId);

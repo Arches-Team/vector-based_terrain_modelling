@@ -4,7 +4,7 @@
 #include "libs/maya.h"
 
 #include "ui_main.h"
-#include "GaussianTerrainRaytracingWidget.h"
+#include "VectorTerrainRaytracingWidget.h"
 
 class QteWindow : public QMainWindow
 {
@@ -12,7 +12,7 @@ class QteWindow : public QMainWindow
 
 private:
   Ui::Assets uiw; //!< Interface : QtDesigner.
-  std::unique_ptr<GaussianTerrainRaytracingWidget> raywidget;
+  std::unique_ptr<VectorTerrainRaytracingWidget> raywidget;
   HeightField m_hf;
 
   std::map<QString, QString> m_templateBrushes;
@@ -38,8 +38,8 @@ public slots:
 
   void updateRayStep(int val);
   void updateRayEps(int val);
-  void updateNbGaussians(int val);
-  void setMaxGaussians(int val);
+  void updateNbPrimitives(int val);
+  void setMaxPrimitives(int val);
   void updateShowInfluence(bool show);
 
   void handTool();

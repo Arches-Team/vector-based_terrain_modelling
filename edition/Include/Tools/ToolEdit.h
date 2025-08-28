@@ -30,7 +30,7 @@ private:
 	std::vector<Kernel*> m_selectedGaussians;
 
 public:
-	ToolEdit(GaussianTerrainRaytracingWidget* parent, Kernels& kernels): Tool(parent, kernels)
+	ToolEdit(VectorTerrainRaytracingWidget* parent, Kernels& kernels): Tool(parent, kernels)
 	{
 	}
 

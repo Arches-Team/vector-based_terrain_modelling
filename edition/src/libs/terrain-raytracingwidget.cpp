@@ -42,7 +42,7 @@ void TerrainRaytracingWidget::initializeGL()
   QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
   if (pPath.isEmpty())
   {
-    std::cout << "MeshWidget::ReloadShaders() : SOLUTION_DIR undefined" << std::endl;
+    std::cout << "MeshWidget::reloadShaders() : SOLUTION_DIR undefined" << std::endl;
     std::cin.get();
     exit(-1);
   }
@@ -210,9 +210,9 @@ void TerrainRaytracingWidget::UpdateInternal()
 /*!
 \brief Reload the shaders of the widget. Useful for realtime editing and fine tuning of the rendering.
 */
-void TerrainRaytracingWidget::ReloadShaders()
+void TerrainRaytracingWidget::reloadShaders()
 {
-  MeshWidget::ReloadShaders();
+  MeshWidget::reloadShaders();
 
   QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
   if (pPath.isEmpty())

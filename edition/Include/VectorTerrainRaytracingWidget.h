@@ -8,22 +8,22 @@
 #include "MayaSimpleRendererColors.h"
 
 
-class GaussianTerrainRaytracingWidget : public TerrainRaytracingWidget
+class VectorTerrainRaytracingWidget : public TerrainRaytracingWidget
 {
 	Q_OBJECT
 
 public:
-	GaussianTerrainRaytracingWidget();
-	~GaussianTerrainRaytracingWidget();
+	VectorTerrainRaytracingWidget();
+	~VectorTerrainRaytracingWidget() override;
 	void initializeGL() override;
-	void ReloadShaders() override;
-	void SetNbGaussians(int val);
-	void useGaussians(const bool& use);
+	void reloadShaders() override;
+	void setNbPrimitives(int val);
 	void showInfluence(const bool& show);
-	int getNbGaussians();
-	void openGaussiansCSVFile(const QString& filename);
-	void openGaussiansNPYFile(const QString& filename);
-	void saveGaussiansCSVFile(const QString& filename);
+	int getNbPrimitives();
+
+	// Accept ext = {"npy", "cvs"}
+	void loadPrimitivesFile(const QString& filename, const QString& ext);
+	void saveCSVFile(const QString& filename);
 
 	void setRenderResolution(int resolution);
 	int getRenderResolution() const { return m_hfSize; }
@@ -32,21 +32,21 @@ public:
 
 	QString getRecordName(const QString& suffix = "");
 	void recordHF(const QString& suffix = "", const ScalarField2* sf = nullptr);
+	bool saveLogs() const { return m_saveLogs; }
 	void exportToRes(int res);
 
 	void paintGL() override;
 
-	void SetAlbedo(const QImage&);
+	void setAlbedo(const QImage&);
 	void updateInfluenceRenderers();
-	void rasterizeGaussians();
+	void rasterizePrimitives();
 
 	const ScalarField2* getHF() const;
 	void setTool(const ToolType& type);
 	void applyTool() const { m_currentTool->apply(); }
-	void UpdateGaussiansBuffer();
+	void updatePrimitivesBuffer();
 	GLBuffer& getHFBuffer() { return hfBuffer; };
 
-	// TODO: move in ToolBrush
 	float getBrushThreshold() const { return m_brushThreshold; }
 
 private:
@@ -59,7 +59,7 @@ private:
 	static bool isControlShiftAltPressed(QMouseEvent* e);
 	static bool isShiftAltPressed(QMouseEvent* e);
 
-	GLBuffer m_ssbo_gaussians;
+	GLBuffer m_ssbo_primitives;
 	static constexpr int m_gridSize = 25;
 	int m_hfSize{ 256 };
 	// TODO: compute dynamically maxPerCell
@@ -86,7 +86,7 @@ private:
 	std::unique_ptr<Tool> m_currentTool{};
 
 	bool m_showInfluence{false};
-	int m_nbGaussiansToShow{1};
+	int m_nbPrimitivesToShow{1};
 	float m_brushThreshold{0.2f};
 
 	static constexpr int m_influenceCircleSegment = 50;
@@ -98,7 +98,7 @@ private:
 	bool m_saveLogs{ true };
 
 signals:
-	void nbGaussiansChanged(int newVal);
+	void nbPrimitivesChanged(int newVal);
 	void updateDepthGraph(int val);
 
 public slots:
@@ -129,8 +129,8 @@ public slots:
 	void setMaxRange(int maxRange)
 	{
 	    m_maxRange = maxRange;
-	    rasterizeGaussians();
+	    rasterizePrimitives();
 	}
-	void nbGaussiansChanged();
+	void nbPrimitivesChanged();
 };
 

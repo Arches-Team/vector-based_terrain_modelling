@@ -1,5 +1,6 @@
 #include "Kernels.h"
 
+#include <QTextStream>
 #include <QtCore/qfile.h>
 
 #include "npy.hpp"
@@ -66,6 +67,33 @@ void Kernels::loadNPYFile(const QString& filename)
 	}
 
 	sort();
+}
+
+void Kernels::saveCSVFile(const QString& filename)
+{
+	QFile file(filename);
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		std::cout << file.errorString().toStdString() << std::endl;
+		return;
+	}
+	QTextStream out(&file);
+
+	bool isBeginning = true;
+	for (auto& k : m_kernels)
+	{
+		auto data = k->get();
+		for (const float& d : data)
+		{
+			if (!isBeginning)
+				out << ",";
+			isBeginning = false;
+			out << QString::number(d);
+		}
+	}
+	out << "\n";
+
+	file.close();
 }
 
 std::vector<float> Kernels::getArray()

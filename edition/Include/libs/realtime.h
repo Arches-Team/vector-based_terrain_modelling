@@ -196,7 +196,7 @@ protected:
   virtual void RenderSky();
   virtual void RenderUiPanels();
   virtual void RenderMeshes();
-  virtual void ReloadShaders();
+  virtual void reloadShaders();
 
 private:
 signals:
@@ -283,9 +283,9 @@ public:
   void SetSelfShadowStrength(float);
 
 protected:
-  virtual void paintGL();
-  virtual void initializeGL();
-  virtual void ReloadShaders();
+  void paintGL() override;
+  void initializeGL() override;
+  void reloadShaders() override;
 };
 
 
@@ -366,7 +366,7 @@ public:
   ~SphereTracingWidget();
 
   virtual void paintGL();
-  virtual void ReloadShaders();
+  virtual void reloadShaders();
 
   void AddSDF(const QString&, const QString&);
   void DeleteSDF(const QString&);

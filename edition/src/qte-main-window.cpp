@@ -32,7 +32,7 @@ QteWindow::QteWindow()
     // Ray tracing widget
     {
         const Camera camera(Vector(-10.0, -10.0, 10.0));
-        raywidget = std::make_unique<GaussianTerrainRaytracingWidget>();
+        raywidget = std::make_unique<VectorTerrainRaytracingWidget>();
         auto* GLlayout = new QGridLayout;
         GLlayout->addWidget(raywidget.get(), 0, 0);
         GLlayout->setContentsMargins(0, 0, 0, 0);
@@ -40,7 +40,7 @@ QteWindow::QteWindow()
         raywidget->SetCamera(camera);
     }
 
-    uiw.slider_nbgaussians->setMaximum(raywidget->getNbGaussians());
+    uiw.slider_nbgaussians->setMaximum(raywidget->getNbPrimitives());
 
     createActions();
     setAcceptDrops(true);
@@ -92,15 +92,15 @@ void QteWindow::updateRayEps(const int val)
     raywidget->SetEpsilon(static_cast<float>(val) / 1000.f);
 }
 
-void QteWindow::updateNbGaussians(const int val)
+void QteWindow::updateNbPrimitives(const int val)
 {
-    raywidget->SetNbGaussians(val);
+    raywidget->setNbPrimitives(val);
     uiw.label_nbgaussians->setText(QString("%1 primitives").arg(val));
 }
 
-void QteWindow::setMaxGaussians(const int val)
+void QteWindow::setMaxPrimitives(const int val)
 {
-    raywidget->SetNbGaussians(val);
+    raywidget->setNbPrimitives(val);
     uiw.label_nbgaussians->setText(QString("%1 primitives").arg(val));
     uiw.slider_nbgaussians->setRange(1, val);
     uiw.slider_nbgaussians->setValue(val);
@@ -242,9 +242,9 @@ void QteWindow::createActions()
     connect(uiw.btn_graphTool, SIGNAL(clicked()), this, SLOT(graphTool()));
     connect(uiw.btn_applyTool, SIGNAL(clicked()), this, SLOT(applyTool()));
 
-    connect(raywidget.get(), SIGNAL(nbGaussiansChanged(int)), this, SLOT(setMaxGaussians(int)));
+    connect(raywidget.get(), SIGNAL(nbPrimitivesChanged(int)), this, SLOT(setMaxPrimitives(int)));
 
-    connect(uiw.slider_nbgaussians, SIGNAL(valueChanged(int)), this, SLOT(updateNbGaussians(int)));
+    connect(uiw.slider_nbgaussians, SIGNAL(valueChanged(int)), this, SLOT(updateNbPrimitives(int)));
     connect(uiw.check_showInfluence, SIGNAL(clicked(bool)), this, SLOT(updateShowInfluence(bool)));
 
     connect(uiw.slider_noiseLevel, SIGNAL(valueChanged(int)), raywidget.get(), SLOT(setNoiseLevel(int)));
@@ -310,13 +310,10 @@ void QteWindow::OpenGaussianFile()
                                                           tr("Gaussians files(*.csv *.npy)"));
     const QFileInfo fileInfo{filename};
     const auto ext = fileInfo.suffix();
-    if (ext == "csv")
-        raywidget->openGaussiansCSVFile(filename);
-    else if (ext == "npy")
-        raywidget->openGaussiansNPYFile(filename);
+    raywidget->loadPrimitivesFile(filename, ext);
 
     raywidget->UseGreenBrownYellowShading(true);
-    emit raywidget->nbGaussiansChanged(raywidget->getNbGaussians());
+    emit raywidget->nbPrimitivesChanged(raywidget->getNbPrimitives());
 
     raywidget->recordHF("hf");
 }
@@ -328,13 +325,13 @@ void QteWindow::SaveGaussianFile()
             std::string(SOLUTION_DIR) + "/data/"),
         tr("Gaussians files(*.csv)"));
 
-    raywidget->saveGaussiansCSVFile(filename);
+    raywidget->saveCSVFile(filename);
 }
 
 void QteWindow::reloadShader()
 {
-    raywidget->ReloadShaders();
-    updateNbGaussians(uiw.slider_nbgaussians->value());
+    raywidget->reloadShaders();
+    updateNbPrimitives(uiw.slider_nbgaussians->value());
 }
 
 void QteWindow::OpenGroundTruth()

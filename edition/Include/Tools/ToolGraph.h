@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GaussianTerrainRaytracingWidget.h"
+#include "VectorTerrainRaytracingWidget.h"
 #include "Kernels/Kernel.h"
 #include "graph.h"
 #include "Tool.h"
@@ -93,7 +93,7 @@ protected:
 	}
 
 public:
-	ToolGraph(GaussianTerrainRaytracingWidget* parent, Kernels& kernels);
+	ToolGraph(VectorTerrainRaytracingWidget* parent, Kernels& kernels);
 
 	void render() const override
 	{

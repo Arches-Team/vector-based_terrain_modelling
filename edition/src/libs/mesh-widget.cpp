@@ -323,7 +323,7 @@ void MeshWidget::initializeGL()
   //QGLFormat::setDefaultFormat(fmt);
 
   // Shader/Camera/Profiler
-  ReloadShaders();
+  reloadShaders();
 
   glGenVertexArrays(1, &skyboxVAO);
 
@@ -542,13 +542,13 @@ void MeshWidget::RenderUiPanels()
 /*!
 \brief Reload the shaders of the widget. Useful for realtime editing and fine tuning of the rendering.
 */
-void MeshWidget::ReloadShaders()
+void MeshWidget::reloadShaders()
 {
   // Shader/Camera/Profiler
   QString pPath = QString::fromStdString(std::string(SOLUTION_DIR));
   if (pPath.isEmpty())
   {
-    std::cout << "MeshWidget::ReloadShaders() : SOLUTION_DIR undefined" << std::endl;
+    std::cout << "MeshWidget::reloadShaders() : SOLUTION_DIR undefined" << std::endl;
     std::cin.get();
     exit(-1);
   }
@@ -941,34 +941,27 @@ void MeshWidget::mouseMoveEvent(QMouseEvent* e)
 {
   int x = e->globalPosition().x();
   int y = e->globalPosition().y();
-  if ((e->modifiers() & Qt::AltModifier))
-  {
-    // Displacement mode 
-    double MoveScale = Norm(camera.View()) * 0.015 * 0.05;
-    if (e->buttons() & Qt::LeftButton)
-    {
-      // Alt + Left Mouse Move    : Rotation 
-      camera.LeftRightRound((x0 - x) * 0.01);
-      camera.UpDownRound((y0 - y) * 0.005);
-    }
-    else if (e->buttons() & Qt::RightButton)
-    {
-      // Alt + Right Mouse Move   : Forward and Backward
-      camera.BackForth((y - y0) * MoveScale);
-      QApplication::setOverrideCursor(QCursor(Qt::SplitVCursor));
-    }
-    else if (e->buttons() & Qt::MiddleButton)
-    {
-      // Alt + Left Mouse Move    : Plan displacement
-      camera.LeftRightHorizontal((x - x0) * MoveScale);
-      camera.UpDownVertical((y - y0) * MoveScale);
-      QApplication::setOverrideCursor(QCursor(Qt::SizeAllCursor));
-    }
-    x0 = e->globalPosition().x();
-    y0 = e->globalPosition().y();
 
-    emit _signalMouseMove();
+  // Displacement mode
+  double MoveScale = Norm(camera.View()) * 0.015 * 0.05;
+  if ((e->modifiers() & Qt::ShiftModifier) && (e->buttons() & Qt::MiddleButton))
+  {
+    // Shift + Middle Mouse Move    : Plan displacement
+    camera.LeftRightHorizontal((x - x0) * MoveScale);
+    camera.UpDownVertical((y - y0) * MoveScale);
+    QApplication::setOverrideCursor(QCursor(Qt::SizeAllCursor));
   }
+  else if (e->buttons() & Qt::MiddleButton)
+  {
+    // Middle Mouse Move    : Rotation
+    camera.LeftRightRound((x0 - x) * 0.01);
+    camera.UpDownRound((y0 - y) * 0.005);
+  }
+  x0 = e->globalPosition().x();
+  y0 = e->globalPosition().y();
+
+  emit _signalMouseMove();
+
   if (e->modifiers() & Qt::ControlModifier)
   {
     emit _signalMouseMoveEdit(ConvertPixelToRay(e->pos()));
@@ -1019,7 +1012,7 @@ void MeshWidget::keyPressEvent(QKeyEvent* e)
     break;
     // F3: hot reload shader
   case Qt::Key_F3:
-    ReloadShaders();
+    reloadShaders();
     break;
   case Qt::Key_S:
     // Alt + S: Statistics
