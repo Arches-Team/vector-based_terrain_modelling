@@ -1,6 +1,6 @@
-optim.image_file_name: "data/ecrins.png"
-optim.num_epochs: 11
-optim.image_size: 128
+optim.image_file_name: "data/SRTM/mountains/N27E086_0000_0002.png"
+optim.num_epochs: 1001
+optim.image_size: 1024
 
 optim.densification_interval: 20
 optim.densify_before: 0.5
@@ -14,9 +14,9 @@ optim.early_stopping_epoch_not_improve: 20
 optim.early_stopping_patience: 50
 
 log.display_interval: 50
-log.results_folder: ./results/test
+log.results_folder: ./results/N27E086_0000_0002
 log.save_gaussians_at_display: True
 
 multiscale.resolutions: [16, 64, 128, 256, 1024]
-multiscale.samples_per_res: [50, 100, 200, 500, 1000]
+multiscale.samples_per_res: [500, 1000, 2000, 5000, 10000]
 multiscale.mod_scale_per_res: [0.06, 0.04, 0.03, 0.02, 0.01]

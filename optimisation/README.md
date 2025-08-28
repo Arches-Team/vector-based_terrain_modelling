@@ -2,3 +2,5 @@
 
 ## Installation
 
+## Usage
+--config_path=./configs/default.yml

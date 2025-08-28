@@ -8,7 +8,7 @@ import utils
 
 
 class GaussianModel:
-    def __init__(self, nb_gaussians: int = 0, image: torch.tensor = None, sketch: torch.tensor = None, device: str = "cpu", lr: float = 0.01,
+    def __init__(self, nb_gaussians: int = 0, image: torch.tensor = None, device: str = "cpu", lr: float = 0.01,
                  init_from_array: np.ndarray or torch.tensor = None, mod_scale_init: float = None, optimizable: bool = True):
         self._sigmas_activation = torch.sigmoid
         self._mod_scale_activation = F.softplus
@@ -36,19 +36,10 @@ class GaussianModel:
         self._xy = nn.Parameter(self._inverse_xy_activation((2 * torch.rand(nb_gaussians, 2, device=device) - 1.)).requires_grad_(True))
         self._beta = nn.Parameter((torch.rand(nb_gaussians, device=device)).requires_grad_(True))
 
-
         self._xy_gradient_accum = torch.zeros((self._xy.shape[0]), device=device)
         self._denom = 0
 
         self._device = device
-
-        # TODO add normalization function for rasterization?
-
-        if sketch is not None:
-            assert image is not None
-            self._init_with_sketch(image, sketch, nb_gaussians)
-        elif image is not None:
-            self._init_with_image(image, nb_gaussians)
 
         # Overwrite all previous init
         if init_from_array is not None:
@@ -83,40 +74,13 @@ class GaussianModel:
         self._amplitude = nn.Parameter(
             self._inverse_amplitude_activation(torch.tensor(colors, device=self._device).float()).requires_grad_(True))
 
-    def _init_with_sketch(self, image, sketch, nb_gaussians):
-        # Sketch [ridge, river] as boolean value
-        width, height = image.shape
-        coords_ridge = sketch[0].nonzero()
-        coords_river = sketch[1].nonzero()
-        idx_ridge = torch.randperm(coords_ridge.shape[0])[:nb_gaussians//2]
-        idx_river = torch.randperm(coords_river.shape[0])[:nb_gaussians//2]
-        coords_ridge = coords_ridge[idx_ridge]
-        coords_river = coords_river[idx_river]
-
-        # TODO: swap coords, there is probably a better way to do that
-        coords_ridge = torch.stack((coords_ridge[:, 1], coords_ridge[:, 0]), dim=1)
-        coords_river = torch.stack((coords_river[:, 1], coords_river[:, 0]), dim=1)
-
-        shape = torch.tensor((width, height), device=self._device)[None, :]
-        self._xy = nn.Parameter(
-            self._inverse_xy_activation(2. * torch.tensor(torch.cat((coords_ridge, coords_river)) / shape,
-                                                          device=self._device).float() - 1).requires_grad_(True))
-
-        colors_ridge = [image[coord[1], coord[0]] for coord in coords_ridge]
-        colors_river = [-image[coord[1], coord[0]] for coord in coords_river]
-        self._amplitude = nn.Parameter(
-            self._inverse_amplitude_activation(torch.tensor(colors_ridge + colors_river, device=self._device).float()).requires_grad_(True))
-        # with torch.no_grad():
-        #     self._mod_scale[:len(colors_ridge)] = self._mod_scale[:len(colors_ridge)]
-        #     self._mod_scale[len(colors_river):] = self._mod_scale[len(colors_river):] / 2.
-
     def _init_from_array(self, array: np.ndarray or torch.tensor):
-        self._sigmas = nn.Parameter(torch.tensor(array[:, 0:2], device=self._device).requires_grad_(True))
-        self._mod_scale = nn.Parameter(torch.tensor(array[:, 2], device=self._device).requires_grad_(True))
-        self._theta = nn.Parameter(torch.tensor(array[:, 3], device=self._device).requires_grad_(True))
-        self._amplitude = nn.Parameter(torch.tensor(array[:, 4], device=self._device).requires_grad_(True))
-        self._xy = nn.Parameter(torch.tensor(array[:, 5:7], device=self._device).requires_grad_(True))
-        self._beta = nn.Parameter(torch.tensor(array[:, 7], device=self._device).requires_grad_(True))
+        self._sigmas = nn.Parameter(array[:, 0:2].clone().detach().to(self._device).requires_grad_(True).requires_grad_(True))
+        self._mod_scale = nn.Parameter(array[:, 2].clone().detach().to(self._device).requires_grad_(True).requires_grad_(True))
+        self._theta = nn.Parameter(array[:, 3].clone().detach().to(self._device).requires_grad_(True).requires_grad_(True))
+        self._amplitude = nn.Parameter(array[:, 4].clone().detach().to(self._device).requires_grad_(True).requires_grad_(True))
+        self._xy = nn.Parameter(array[:, 5:7].clone().detach().to(self._device).requires_grad_(True).requires_grad_(True))
+        self._beta = nn.Parameter(array[:, 7].clone().detach().to(self._device).requires_grad_(True).requires_grad_(True))
 
     def _init_param_accumulation(self):
         self._amplitude_accum = torch.zeros(self._amplitude.shape, device=self._device)

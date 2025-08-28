@@ -5,7 +5,7 @@ from gsplat import rasterization
 
 def rasterize_cuda(gaussians_params, image_size, return_zero_det_gaussians: bool = False):
 
-    sigma_x, sigma_y, mod_scale, theta, amplitude, x, y, beta, _, _ = gaussians_params.unbind(dim=-1)
+    sigma_x, sigma_y, mod_scale, theta, amplitude, x, y, beta = gaussians_params.unbind(dim=-1)
 
     sigma_x = sigma_x * mod_scale * image_size
     sigma_y = sigma_y * mod_scale * image_size
