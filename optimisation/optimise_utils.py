@@ -112,12 +112,8 @@ def optimisation_loop(cfg: Config, gaussians: GaussianModel, losses_fn: List,
     return gaussians
 
 
-# TODO: save GT
-# TODO: save gaussians
-# TODO: reduce number of parameters
 def save_plot(cfg: Config, directory, img, target, nb_gaussians, loss_dict, loss_dict_history, nb_gaussians_history,
-              epoch,
-              num_epochs, densify_until_iter):
+              epoch, num_epochs, densify_until_iter):
     num_subplots = 2
     fig_size_width = 12
 
@@ -158,7 +154,6 @@ def save_plot(cfg: Config, directory, img, target, nb_gaussians, loss_dict, loss
     with open(os.path.join(directory, 'nb_gaussians_history.txt'), 'w') as f:
         f.write(str(nb_gaussians_history))
 
-    # TODO: save in 16 bits?
     generated_array = np.clip(generated_array, 0., 1.)
     img = (generated_array * 255).astype(np.uint8)
 

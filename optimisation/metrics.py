@@ -16,7 +16,7 @@ lpips_fn = lpips.LPIPS(net='vgg')
 @dataclass
 class Config:
     image_size: int = 1024
-    folder: str = './results/gsplat/dem/ecrins/timing/'
+    folder: str = './results/xxx/'
     dem: str = 'final.png'
     gt: str = None
     gaussians: torch.tensor = None
@@ -27,12 +27,13 @@ def main():
     """Generate metrics for one optimisation result.
 
     Produces losses (if GT is given), heatmap, sigmas means.
+    Change Config class accordingly to your data.
     """
     list_metrics = [gaussians_pos_and_heatmap, statistics]
 
     config = Config()
 
-    config.gt = r'./results/gsplat/dem/test_error/ecrins.png'
+    config.gt = r'./data/xxx.png'
 
     if not config.recursive:
         launch_metrics(config, list_metrics)

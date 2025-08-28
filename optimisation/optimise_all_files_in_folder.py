@@ -38,7 +38,7 @@ def execute_script_for_png_files(folder_path, config_path, results_folder_base):
             cv2.imwrite(f'{folder_path}/used/{name}.png', img)
 
         command = [
-            "/home/simon/.conda/envs/automatic1111/bin/python", "optimise.py",
+            "python", "optimise.py",
             f"--config_path={config_path}",
             f"--optim.image_file_name={folder_path}/used/{name}.png",
             f"--log.results_folder={results_folder_base}{name}",
@@ -49,16 +49,6 @@ def execute_script_for_png_files(folder_path, config_path, results_folder_base):
         print(f"Executing command for {png_file}: {' '.join(command)}")
         subprocess.run(command)
 
-# f"--multiscale.samples_per_res=[100, 150, 150, 300, 600]" 1k
-# f"--multiscale.samples_per_res=[200, 250, 250, 750, 1300]" 2k5
-# f"--multiscale.samples_per_res=[400, 500, 500, 1500, 2500]" 5k
-# f"--multiscale.samples_per_res=[800, 1000, 1000, 3000, 5000]" 10k
-# f"--multiscale.samples_per_res=[1500, 2000, 2000, 5000, 10000]" 20k
-# f"--multiscale.samples_per_res=[3000, 4000, 4000, 10000, 20000]" 40k
-# f"--multiscale.samples_per_res=[4500, 6000, 6000, 15000, 30000]" 60k
-# f"--multiscale.samples_per_res=[6000, 8000, 8000, 20000, 40000]" 80k
-# f"--multiscale.samples_per_res=[8000, 10000, 10000, 30000, 50000]" 108k
-# f"--multiscale.samples_per_res=[8000, 20000, 20000, 60000, 100000]" 200k
 
 if __name__ == "__main__":
     # PNG files

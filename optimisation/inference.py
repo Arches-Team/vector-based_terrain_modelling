@@ -20,8 +20,11 @@ def infer(npy_file, image_size, device):
 
 
 def main():
-    image_size = 2048
-    folder = './results/gsplat/dem/alps_startxx/'
+    """
+    Generate a heightfield for all .npy in a (recursive) folder by rasterizing the primitives
+    """
+    image_size = 1024
+    folder = './results'
     device = utils.get_device()
 
     for root, dirs, files in os.walk(folder):
@@ -29,8 +32,9 @@ def main():
             if file.endswith('.npy'):
                 file_path = os.path.join(root, file)
                 img = infer(file_path, image_size, device)
-                cv2.imwrite(f'{root}/final.png', (img * 65535).astype(np.uint16))
-                print(f'Saved {root}/final.png')
+                cv2.imwrite(f'{root}/inference_{file.split(".")[0]}.png', (img * 65535).astype(np.uint16))
+
+    print('Done.')
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ import utils
 
 class GaussianModel:
     def __init__(self, nb_gaussians: int = 0, image: torch.tensor = None, device: str = "cpu", lr: float = 0.01,
-                 init_from_array: np.ndarray or torch.tensor = None, mod_scale_init: float = None, optimizable: bool = True):
+                 init_from_array: torch.tensor = None, mod_scale_init: float = None, optimizable: bool = True):
         self._sigmas_activation = torch.sigmoid
         self._mod_scale_activation = F.softplus
         self._theta_activation = lambda x: torch.tanh(x) * utils.PI
@@ -74,7 +74,7 @@ class GaussianModel:
         self._amplitude = nn.Parameter(
             self._inverse_amplitude_activation(torch.tensor(colors, device=self._device).float()).requires_grad_(True))
 
-    def _init_from_array(self, array: np.ndarray or torch.tensor):
+    def _init_from_array(self, array: torch.tensor):
         self._sigmas = nn.Parameter(array[:, 0:2].clone().detach().to(self._device).requires_grad_(True).requires_grad_(True))
         self._mod_scale = nn.Parameter(array[:, 2].clone().detach().to(self._device).requires_grad_(True).requires_grad_(True))
         self._theta = nn.Parameter(array[:, 3].clone().detach().to(self._device).requires_grad_(True).requires_grad_(True))
@@ -385,7 +385,6 @@ class GaussianModel:
         grads = self._xy_gradient_accum / self._denom
         grads[grads.isnan()] = 0.0
 
-        # TODO: add a maximum number ?
         self.densify_and_clone(grads, max_grad)
         self.densify_and_split(grads, max_grad)
 
@@ -395,7 +394,6 @@ class GaussianModel:
         if self._param_denom == 0:
             return
 
-        # TODO: sigmas norm instead of sigma ratio ?
         min_sigma_ratio = 1 / max_sigma_ratio
         sigmas = self._sigmas_activation(self._sigmas_accum / self._param_denom)
         mod_scale = self._mod_scale_activation(self._mod_scale_accum / self._param_denom)
@@ -403,7 +401,7 @@ class GaussianModel:
 
         ratio = sigmas[:, 0] / sigmas[:, 1]
 
-        # TODO: 2 because between -1 and 1. todo: remove hard coded value
+        # 2 because between -1 and 1.
         pixel_size = 2 / image_size
         size_sigmas = torch.max(3. * sigmas * mod_scale[..., None], dim=1).values
 
