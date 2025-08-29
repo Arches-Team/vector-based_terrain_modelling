@@ -1039,6 +1039,11 @@ QProgressBar::chunk
         <height>230</height>
        </size>
       </property>
+      <property name="font">
+       <font>
+        <family>Roboto</family>
+       </font>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QGroupBox" name="groupBox">
@@ -1048,6 +1053,11 @@ QProgressBar::chunk
            <height>120</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+          </font>
+         </property>
          <property name="title">
           <string>Input / Output</string>
          </property>
@@ -1056,7 +1066,7 @@ QProgressBar::chunk
            <widget class="QPushButton" name="btn_savePrimitives">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="text">
@@ -1066,11 +1076,16 @@ QProgressBar::chunk
           </item>
           <item row="3" column="0">
            <spacer name="verticalSpacer">
+            <property name="font">
+             <font>
+              <family>Roboto</family>
+             </font>
+            </property>
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
+             <enum>QSizePolicy::Policy::Minimum</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -1084,7 +1099,7 @@ QProgressBar::chunk
            <widget class="QComboBox" name="combo_exporthighres">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="currentText">
@@ -1126,7 +1141,7 @@ QProgressBar::chunk
            <widget class="QPushButton" name="btn_exporthighres">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="text">
@@ -1138,7 +1153,7 @@ QProgressBar::chunk
            <widget class="QPushButton" name="btn_addDetails">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="text">
@@ -1150,7 +1165,7 @@ QProgressBar::chunk
            <widget class="QPushButton" name="btn_clear">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="text">
@@ -1162,7 +1177,7 @@ QProgressBar::chunk
            <widget class="QPushButton" name="openPrimitivesFile">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="text">
@@ -1181,6 +1196,11 @@ QProgressBar::chunk
            <height>150</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+          </font>
+         </property>
          <property name="title">
           <string>View parameters</string>
          </property>
@@ -1195,7 +1215,7 @@ QProgressBar::chunk
           </property>
           <property name="font">
            <font>
-            <family>Segoe UI</family>
+            <family>Roboto</family>
            </font>
           </property>
           <property name="text">
@@ -1213,7 +1233,7 @@ QProgressBar::chunk
           </property>
           <property name="font">
            <font>
-            <family>Segoe UI</family>
+            <family>Roboto</family>
            </font>
           </property>
           <property name="minimum">
@@ -1226,10 +1246,10 @@ QProgressBar::chunk
            <number>1</number>
           </property>
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="tickPosition">
-           <enum>QSlider::NoTicks</enum>
+           <enum>QSlider::TickPosition::NoTicks</enum>
           </property>
           <property name="tickInterval">
            <number>0</number>
@@ -1246,7 +1266,7 @@ QProgressBar::chunk
           </property>
           <property name="font">
            <font>
-            <family>Segoe UI</family>
+            <family>Roboto</family>
            </font>
           </property>
           <property name="text">
@@ -1264,7 +1284,7 @@ QProgressBar::chunk
           </property>
           <property name="font">
            <font>
-            <family>Segoe UI</family>
+            <family>Roboto</family>
            </font>
           </property>
           <property name="text">
@@ -1282,7 +1302,7 @@ QProgressBar::chunk
           </property>
           <property name="font">
            <font>
-            <family>Segoe UI</family>
+            <family>Roboto</family>
            </font>
           </property>
           <property name="text">
@@ -1300,7 +1320,7 @@ QProgressBar::chunk
           </property>
           <property name="font">
            <font>
-            <family>Segoe UI</family>
+            <family>Roboto</family>
            </font>
           </property>
           <property name="text">
@@ -1318,7 +1338,7 @@ QProgressBar::chunk
           </property>
           <property name="font">
            <font>
-            <family>Segoe UI</family>
+            <family>Roboto</family>
            </font>
           </property>
           <property name="minimum">
@@ -1331,10 +1351,10 @@ QProgressBar::chunk
            <number>200</number>
           </property>
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="tickPosition">
-           <enum>QSlider::NoTicks</enum>
+           <enum>QSlider::TickPosition::NoTicks</enum>
           </property>
           <property name="tickInterval">
            <number>0</number>
@@ -1351,7 +1371,7 @@ QProgressBar::chunk
           </property>
           <property name="font">
            <font>
-            <family>Segoe UI</family>
+            <family>Roboto</family>
            </font>
           </property>
           <property name="minimum">
@@ -1364,10 +1384,10 @@ QProgressBar::chunk
            <number>500</number>
           </property>
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="tickPosition">
-           <enum>QSlider::NoTicks</enum>
+           <enum>QSlider::TickPosition::NoTicks</enum>
           </property>
           <property name="tickInterval">
            <number>0</number>
@@ -1383,6 +1403,11 @@ QProgressBar::chunk
            <height>90</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+          </font>
+         </property>
          <property name="title">
           <string>Tools</string>
          </property>
@@ -1391,7 +1416,7 @@ QProgressBar::chunk
            <widget class="QPushButton" name="btn_graphTool">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="text">
@@ -1403,7 +1428,7 @@ QProgressBar::chunk
            <widget class="QPushButton" name="btn_handTool">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="text">
@@ -1415,7 +1440,7 @@ QProgressBar::chunk
            <widget class="QPushButton" name="btn_eraseTool">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="toolTip">
@@ -1430,7 +1455,7 @@ QProgressBar::chunk
            <widget class="QPushButton" name="btn_moveTool">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="text">
@@ -1445,7 +1470,7 @@ QProgressBar::chunk
         <widget class="QStackedWidget" name="toolOptionsWidget">
          <property name="font">
           <font>
-           <family>Segoe UI</family>
+           <family>Roboto</family>
           </font>
          </property>
          <property name="currentIndex">
@@ -1503,10 +1528,10 @@ QProgressBar::chunk
              <number>20</number>
             </property>
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="tickPosition">
-             <enum>QSlider::NoTicks</enum>
+             <enum>QSlider::TickPosition::NoTicks</enum>
             </property>
             <property name="tickInterval">
              <number>0</number>
@@ -1649,10 +1674,10 @@ QProgressBar::chunk
              <number>1</number>
             </property>
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="tickPosition">
-             <enum>QSlider::NoTicks</enum>
+             <enum>QSlider::TickPosition::NoTicks</enum>
             </property>
             <property name="tickInterval">
              <number>0</number>
@@ -1718,10 +1743,10 @@ QProgressBar::chunk
              <number>100</number>
             </property>
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="tickPosition">
-             <enum>QSlider::NoTicks</enum>
+             <enum>QSlider::TickPosition::NoTicks</enum>
             </property>
             <property name="tickInterval">
              <number>0</number>
@@ -1880,6 +1905,11 @@ QProgressBar::chunk
        </item>
        <item>
         <widget class="QGroupBox" name="gridGroupBox">
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+          </font>
+         </property>
          <property name="title">
           <string>Miscellaneous</string>
          </property>
@@ -1888,7 +1918,7 @@ QProgressBar::chunk
            <widget class="QPushButton" name="btn_loadShader">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="text">
@@ -1900,7 +1930,7 @@ QProgressBar::chunk
            <widget class="QPushButton" name="btn_openTerrain">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="text">
@@ -1915,7 +1945,7 @@ QProgressBar::chunk
             </property>
             <property name="font">
              <font>
-              <family>Segoe UI</family>
+              <family>Roboto</family>
              </font>
             </property>
             <property name="text">
@@ -1936,7 +1966,7 @@ QProgressBar::chunk
      <widget class="QOpenGLWidget" name="raytracingwidget">
       <property name="font">
        <font>
-        <family>Segoe UI</family>
+        <family>Roboto</family>
        </font>
       </property>
      </widget>
@@ -1952,11 +1982,26 @@ QProgressBar::chunk
      <height>22</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Roboto</family>
+    </font>
+   </property>
    <widget class="QMenu" name="menuOptions">
+    <property name="font">
+     <font>
+      <family>Roboto</family>
+     </font>
+    </property>
     <property name="title">
      <string>Options</string>
     </property>
     <widget class="QMenu" name="menuRender_resolution">
+     <property name="font">
+      <font>
+       <family>Roboto</family>
+      </font>
+     </property>
      <property name="title">
       <string>Render resolution</string>
      </property>
@@ -2016,7 +2061,7 @@ QProgressBar::chunk
    </property>
    <property name="font">
     <font>
-     <family>Segoe UI</family>
+     <family>Roboto</family>
     </font>
    </property>
   </action>
@@ -2026,7 +2071,7 @@ QProgressBar::chunk
    </property>
    <property name="font">
     <font>
-     <family>Segoe UI</family>
+     <family>Roboto</family>
     </font>
    </property>
   </action>
@@ -2036,7 +2081,7 @@ QProgressBar::chunk
    </property>
    <property name="font">
     <font>
-     <family>Segoe UI</family>
+     <family>Roboto</family>
     </font>
    </property>
   </action>
@@ -2046,7 +2091,7 @@ QProgressBar::chunk
    </property>
    <property name="font">
     <font>
-     <family>Segoe UI</family>
+     <family>Roboto</family>
     </font>
    </property>
   </action>
@@ -2056,7 +2101,7 @@ QProgressBar::chunk
    </property>
    <property name="font">
     <font>
-     <family>Segoe UI</family>
+     <family>Roboto</family>
     </font>
    </property>
   </action>
