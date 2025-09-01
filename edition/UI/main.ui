@@ -1447,7 +1447,7 @@ QProgressBar::chunk
              <string>Ctrl + Wheel : change radius size</string>
             </property>
             <property name="text">
-             <string>Simple disc</string>
+             <string>Local modification</string>
             </property>
            </widget>
           </item>
