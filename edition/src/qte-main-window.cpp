@@ -1,6 +1,13 @@
 #include "qte.h"
 
+
+#ifdef _WIN32
 #include <direct.h>
+#else
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
 #include <QtWidgets/qmessagebox.h>
 #include <QtWidgets/QFileDialog>
 
@@ -166,7 +173,12 @@ void QteWindow::refreshTemplateBrush()
 
     auto brushFolder = std::string(SOLUTION_DIR) + "/data/brushes/templates/";
 
+
+    #ifdef _WIN32
     _mkdir(brushFolder.c_str());
+    #else
+    mkdir(brushFolder.c_str(), 0755);
+    #endif
 
     // Add all csv files in the template folder
     for (const auto& entry : std::filesystem::directory_iterator(brushFolder)) {

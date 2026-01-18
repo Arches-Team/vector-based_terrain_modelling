@@ -1,9 +1,15 @@
 #include "VectorTerrainRaytracingWidget.h"
 
+#ifdef _WIN32
+#include <direct.h>
+#else
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
 #include <QtGui/QMouseEvent>
 #include <QtGui/qpainter.h>
 #include <QtWidgets/qfiledialog.h>
-#include <direct.h>
 #include <QtWidgets/qmessagebox.h>
 
 #include "libs/scalarfield.h"
@@ -24,21 +30,37 @@ VectorTerrainRaytracingWidget::VectorTerrainRaytracingWidget(): m_accelerationGr
 	std::time_t now = std::time(nullptr);
 	std::tm localTime;
 
-	localtime_s(&localTime, &now);
 
+	#ifdef _WIN32
+    localtime_s(&localTime, &now);
+	#else
+    localtime_r(&now, &localTime);
+	#endif
 	char buffer[80];
 	std::strftime(buffer, sizeof(buffer), "%d_%m_%Y_%H_%M_%S", &localTime);
 
 	std::string mainName = std::string(SOLUTION_DIR) + "/logs/";
 
-	if (_mkdir(mainName.c_str()) != 0)
+
+	#ifdef _WIN32
+		if (_mkdir(mainName.c_str()) != 0)
+	#else
+		if (mkdir(mainName.c_str(), 0755) != 0)
+	#endif
+
 	{
 		std::cerr << "Failed to create the main log folder: " << mainName << ". The folder probably already exists." << std::endl;
 	}
 
 	std::string folderName = mainName + buffer;
 
-	if (_mkdir(folderName.c_str()) != 0) 
+
+	#ifdef _WIN32
+		if (_mkdir(mainName.c_str()) != 0)
+	#else
+		if (mkdir(mainName.c_str(), 0755) != 0)
+	#endif
+
 	{
 		std::cerr << "Failed to create log folder: " << folderName << std::endl;
 		folderName = "";
@@ -379,7 +401,12 @@ QString VectorTerrainRaytracingWidget::getRecordName(const QString& suffix)
 
 	std::time_t now = std::time(nullptr);
 	std::tm localTime;
-	localtime_s(&localTime, &now);
+	#ifdef _WIN32
+    localtime_s(&localTime, &now);
+	#else
+    localtime_r(&now, &localTime);
+	#endif
+
 	char buffer[80];
 	std::strftime(buffer, sizeof(buffer), "%H_%M_%S", &localTime);
 	std::string file = buffer;

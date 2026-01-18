@@ -5,7 +5,8 @@
 
 #include "libs/cpu.h"
 
-#ifdef _MSC_VER
+
+#ifdef _WIN32
 
 // Architecture
 #include <windows.h>
@@ -280,25 +281,28 @@ QImage System::Compose(const QImage& image, const QImage& over, QPainter::Compos
 */
 QString System::Memory()
 {
-#ifdef _MSC_VER // Make a linux and macos version
-  // Use to convert to kb
-  const int k = 1024;
 
-  MEMORYSTATUSEX statex;
+#ifdef _WIN32
 
-  statex.dwLength = sizeof(statex);
+    const int k = 1024;
 
-  GlobalMemoryStatusEx(&statex);
+    MEMORYSTATUSEX statex;
+    statex.dwLength = sizeof(statex);
+    GlobalMemoryStatusEx(&statex);
 
-  QString s =
-    "Memory   " + LongInteger(statex.dwMemoryLoad / k) +
-    "\nPhysical " + LongInteger(statex.ullTotalPhys / k) +
-    "\n    Free " + LongInteger(statex.ullAvailPhys / k) +
-    "\nVirtual  " + LongInteger(statex.ullTotalVirtual / k) +
-    "\n    Free " + LongInteger(statex.ullAvailVirtual / k) +
-    "\nExtended " + LongInteger(statex.ullAvailExtendedVirtual / k);
+    QString s =
+        "Memory   " + LongInteger(statex.dwMemoryLoad / k) +
+        "\nPhysical " + LongInteger(statex.ullTotalPhys / k) +
+        "\n    Free " + LongInteger(statex.ullAvailPhys / k) +
+        "\nVirtual  " + LongInteger(statex.ullTotalVirtual / k) +
+        "\n    Free " + LongInteger(statex.ullAvailVirtual / k) +
+        "\nExtended " + LongInteger(statex.ullAvailExtendedVirtual / k);
+
+    return s;
+
+#else //make a Linux/Mac version
+
+    return QString("Memory info not available on Linux/MacOS");
 
 #endif
-
-  return s;
 }

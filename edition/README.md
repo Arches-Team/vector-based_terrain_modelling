@@ -4,9 +4,15 @@
 
 This project has been tested on Windows with CLion 2025 and depends on C++20, CMake, Qt 6.9.1. While it may work on other platform, it has not been tested for it.
 
+### On linux
+You need to install the following packages
+```qt6-base-dev qt6-declarative-dev qt6-tools-dev qt6-charts-dev qt6-opengl-dev libglew-dev libxkbcommon-dev build-essential cmake```
+
 ## Installation
 
 We rely on CMake for its configuration. Hence, executable can be built on Windows with:
+
+### Windows
 ```
 git clone --recursive https://github.com/simonperche/vector-based_terrain_modelling.git
 cd vector-based_terrain_modelling/edition
@@ -15,17 +21,29 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config "Release"
 ```
 
+### Linux
+```
+git clone --recursive https://github.com/simonperche/vector-based_terrain_modelling.git
+cd vector-based_terrain_modelling/edition
+mkdir build
+cmake -S . -B build
+cmake --build build -j$(nproc)
+```
+
 Since this project uses Qt, you must ensure that the required Qt dynamic libraries are available in the output directory.
 On Windows, use `windeployqt` (bundled with Qt) to automatically copy the necessary DLLs:
 ```
 {QT_PATH}\{version}\{compiler}\bin\windeployqt.exe Release\VectorTerrains.exe
 ```
 
+Linux will handle it automatically.
+
+
 ## Usage
 
 ### Global shortcuts
 
-- Middle click : rotate the camera
+- Middle click : rotate the camera (Use Ctrl+MMB when using Crest Graph)
 - Shift + middle click : pan the camera
 - Left click : use the current tool
 
